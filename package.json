@@ -1,0 +1,19 @@
+{
+  "name": "loginproxi",
+  "version": "0.0.1",
+  "description": "login proxy for Volcanosis apps",
+  "main": "loginproxy.js",
+  "scripts": {
+    "start":"node loginproxy.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SAudelOG/loginproxi.git"
+  },
+  "author": "Volcanosis",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/SAudelOG/loginproxi/issues"
+  },
+  "homepage": "https://github.com/SAudelOG/loginproxi"
+}
