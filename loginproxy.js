@@ -1,15 +1,34 @@
 'use strict';
 
+//make '.jsx' extensions files requirable by node
+require('node-jsx').install();
+
 //require node modules
 var express = require('express'),
-    http = require('http');
+    http = require('http'),
+    path = require('path'),
+    renderer = require('react-engine');
 
 var app = express();
+
+//set up react-engine
+var engine = renderer.server.create();
+app.engine('jsx', engine);
+app.set('views', __dirname + '/public/views');
+app.set('view engine', 'jsx');
+
+app.set('view',renderer.expressView);
+
+//public assets
+app.use(express.static(__dirname + '/public'));
 
 app.set('port', process.env.PORT || 3000);
 
 app.get('/', function(req, res){
-  res.json({status:'success'});
+  res.render('home',{
+    title:'Welcome to Volcanosis Home!',
+    organization:'Volcanosis'
+  });
 });
 
 http.createServer(app).listen(app.get('port'),function(){
