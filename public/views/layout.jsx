@@ -8,6 +8,7 @@ module.exports = React.createClass({
       <html>
         <head>
           <meta charSet='utf-8' />
+	         <link rel="stylesheet" type="text/css" href="/css/app.css"/>
           <title>
             {this.props.title}
           </title>

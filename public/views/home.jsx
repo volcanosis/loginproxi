@@ -12,10 +12,25 @@ module.exports = React.createClass({
     return(
       <Layout {...this.props}>
         <div id="index">
-          <h1>Hello {this.props.organization}!</h1>
           <button onClick={this.onButtonClick}>__Click Me__</button>
         </div>
+        <CreateAppBox />
       </Layout>
+    );
+  }
+});
+var CreateAppBox = React.createClass({
+  render: function(){
+    return(
+      <div className="createAppBox">
+        <form method="post" action="/CreateApp" name="crateAppForm">
+          <label className="lblCreateApp" htmlFor="appName">
+            Escribe el nombre de tu app
+          </label>
+          <input name="appName" id="appNameField" type="text" placeholder="nombre de la app"/>
+          <button className="btnCreateApp" type="submit">Create App</button>
+        </form>
+      </div>
     );
   }
 });

@@ -24,12 +24,10 @@ app.use(express.static(__dirname + '/public'));
 
 app.set('port', process.env.PORT || 3000);
 
-app.get('/', function(req, res){
-  res.render('home',{
-    title:'Welcome to Volcanosis Home!',
-    organization:'Volcanosis'
-  });
-});
+app.use(require('body-parser')());
+
+//router
+(require('./router')(app));
 
 http.createServer(app).listen(app.get('port'),function(){
 
