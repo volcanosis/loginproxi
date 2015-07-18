@@ -19,7 +19,7 @@ module.exports = function(app){
       mongoose.connect(credentials.mongo.dev.connectionString, options);
       break;
     default:
-      throw new Error('Unknown exectios enviroment: ' + app.get('env'));
+      throw new Error('Unknown execution enviroment: ' + app.get('env'));
   }
 
   app.get('/', function(req, res){
