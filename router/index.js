@@ -30,8 +30,8 @@ module.exports = function(app){
   }
 
   app.get('/', function(req, res){
-    res.render('home',{
-      title:'Welcome to Volcanosis Home!',
+    res.render('console',{
+      title:'developer console',
       organization:'Volcanosis'
     });
   });

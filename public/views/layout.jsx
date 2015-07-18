@@ -14,6 +14,7 @@ module.exports = React.createClass({
           </title>
         </head>
         <body>
+          <h1>Volcanosis developer console</h1>
           {this.props.children}
         </body>
         <script src="/bundle.js"></script>
