@@ -1,18 +1,24 @@
-'use strict';
+'use strict'
 
 var Layout = require('./layout.jsx');
 var React = require('react');
 
-var CreateAppBox = React.createClass({
+var BtnCreateApp = React.createClass({
   render: function(){
     return(
-      <div className="createAppBox">
-        <form method="post" action="/CreateApp" name="crateAppForm">
-          <input name="appName" id="appNameField" type="text" placeholder="App name"/>
-          <input name="appDomain" id="appDomainField" type="text" placeholder="Domain name" />
-          <button className="btnCreateApp" type="submit">Create App</button>
-        </form>
-      </div>
+      <a href="/console/create-application" className="btnCreateApp">
+        Create application
+      </a>
+    );
+  }
+});
+
+var BtnCheckApps = React.createClass({
+  render: function(){
+    return(
+      <a href="/console/check-applications" className="btnCheckApps">
+        Check applications
+      </a>
     );
   }
 });
@@ -22,9 +28,11 @@ module.exports = React.createClass({
     return(
       <Layout {...this.props}>
         <div id="container">
-          <CreateAppBox />
+          <BtnCreateApp />
+          <br />
+          <BtnCheckApps />
         </div>
       </Layout>
-    );
+    )
   }
 });

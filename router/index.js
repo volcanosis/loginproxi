@@ -30,10 +30,18 @@ module.exports = function(app){
   }
 
   app.get('/', function(req, res){
+    return res.redirect(303, '/console');
+  });
+
+  app.get('/console',function(req, res){
     res.render('console',{
       title:'developer console',
       organization:'Volcanosis'
     });
+  });
+
+  app.get('/console/create-application',function(req, res){
+    res.render('createApp');
   });
 
   app.post('/CreateApp', function(req, res){
