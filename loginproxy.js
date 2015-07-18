@@ -24,6 +24,7 @@ app.use(express.static(__dirname + '/public'));
 
 app.set('port', process.env.PORT || 3000);
 
+app.use(require('body-parser').json());
 app.use(require('body-parser').urlencoded({
   extended:true
 }));

@@ -28,3 +28,6 @@ node_modules
 
 //bundle
 public/bundle.js
+
+//credentals
+credentials.js

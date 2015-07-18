@@ -24,10 +24,8 @@ var CreateAppBox = React.createClass({
     return(
       <div className="createAppBox">
         <form method="post" action="/CreateApp" name="crateAppForm">
-          <label className="lblCreateApp" htmlFor="appName">
-            Escribe el nombre de tu app
-          </label>
-          <input name="appName" id="appNameField" type="text" placeholder="nombre de la app"/>
+          <input name="appName" id="appNameField" type="text" placeholder="App name"/>
+          <input name="appDomain" id="appDomainField" type="text" placeholder="Domain name" />
           <button className="btnCreateApp" type="submit">Create App</button>
         </form>
       </div>
