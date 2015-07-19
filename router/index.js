@@ -45,18 +45,21 @@ module.exports = function(app){
   });
 
   app.post('/CreateApp', function(req, res){
-    var appName = req.body.appName,
-        domain = req.body.appDomain;
+    if (req.xhr){
+      var appName = req.body.appName,
+          domain = req.body.appDomain;
 
-    new Application({
-      appName: appName,
-      domain: domain,
-      isActive: true,
-    }).save(function(err){
-      if(err) return console.log('Database connection err');
-      console.log('Data saved');
-    });
-    return res.redirect(303, '/');
+      new Application({
+        appName: appName,
+        domain: domain,
+        isActive: true,
+      }).save(function(err){
+        if(err) return console.log('Database connection err');
+        console.log('Data saved');
+      });
+      return res.json({status:'succes'});
+    }
+    return;
   });
 
   app.get('/console/check-applications', function(req, res){
