@@ -55,6 +55,13 @@ var AppList = React.createClass({
   }
 });
 
+var AppEditForm = React.createClass({
+  render: function(){
+    return(
+      <button className="btnEditdarApp">editar</button>
+    );
+  }
+});
 var App = React.createClass({
   render: function(){
     return(
@@ -63,6 +70,9 @@ var App = React.createClass({
           {this.props.appName}
         </h2>
         <span>{this.props.children}</span>
+        <div className="editAppBox">
+          <AppEditForm/>
+        </div>
       </div>
     );
   }
