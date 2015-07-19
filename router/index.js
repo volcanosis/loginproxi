@@ -58,4 +58,22 @@ module.exports = function(app){
     });
     return res.redirect(303, '/');
   });
+
+  app.get('/console/check-applications', function(req, res){
+    res.render('checkApps');
+  });
+
+  app.get('/fetchApps', function(req, res){
+    Application.find({isActive:true}, function(err, applications){
+      var context = {
+        applications:applications.map(function(application){
+          return{
+            appName: application.appName,
+            domain: application.domain
+          };
+        })
+      };
+      return res.json(context);
+    })
+  });
 };
