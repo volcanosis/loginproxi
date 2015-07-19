@@ -29,10 +29,13 @@ module.exports = function(app){
       throw new Error('Unknown execution enviroment: ' + app.get('env'));
   }
 
+  //when user open the app redirect /console
   app.get('/', function(req, res){
     return res.redirect(303, '/console');
   });
 
+  //developer console to create and configure
+  //application
   app.get('/console',function(req, res){
     res.render('console',{
       title:'developer console',
@@ -40,10 +43,9 @@ module.exports = function(app){
     });
   });
 
-  app.get('/console/create-application',function(req, res){
-    res.render('createApp');
-  });
-
+  //method to create applications
+  //TODO:add missing properties on data model
+  //when app is created like appid etc
   app.post('/CreateApp', function(req, res){
     if (req.xhr){
       var appName = req.body.appName,
@@ -57,15 +59,13 @@ module.exports = function(app){
         if(err) return console.log('Database connection err');
         console.log('Data saved');
       });
-      return res.json({status:'succes'});
+      return res.json({status:'success'});
     }
     return;
   });
 
-  app.get('/console/check-applications', function(req, res){
-    res.render('checkApps');
-  });
-
+  //method to fetch application data and
+  //exposed to the users
   app.get('/fetchApps', function(req, res){
     Application.find({isActive:true}, function(err, applications){
       var context = {
