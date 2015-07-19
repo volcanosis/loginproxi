@@ -10,6 +10,7 @@ var CreateAppBox = React.createClass({
   render: function(){
     return(
       <div className="createAppForm" >
+        <h1>Create new application</h1>
         <CreateAppForm url="/CreateApp"/>
       </div>
     );
