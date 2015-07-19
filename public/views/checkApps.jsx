@@ -24,6 +24,8 @@ var AppBox = React.createClass({
   },
   componentDidMount: function(){
     this.fetchAppsFromServer();
+    //TODO: implement technology to fetch data
+    //nonly when a new app is created
     setInterval(this.fetchAppsFromServer, this.props.pollInterval)
   },
   render: function(){
