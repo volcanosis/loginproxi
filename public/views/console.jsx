@@ -20,6 +20,24 @@ var AppBox = React.createClass({
       }.bind(this)
     });
   },
+  handleCreateAppSubmit: function(application, url){
+    $.ajax({
+      type: 'Post',
+      url: url,
+      dataType: 'json',
+      cache: 'false',
+      data: application,
+      success: function(data){
+        console.log(data);
+      },
+      erorr: function(xhr, status, err){
+        console.log(this.props.url, status, err.toString());
+      }
+    });
+    //TODO:fetch data on success request
+    //mount new applications created
+    this.fetchAppsFromServer();
+  },
   getInitialState: function(){
     return {data:[]};
   },
@@ -32,6 +50,8 @@ var AppBox = React.createClass({
   render: function(){
     return(
       <div className="appBox">
+        <h1>Create new application</h1>
+        <CreateAppForm onCreateAppSubmit={this.handleCreateAppSubmit} url="/CreateApp"/>
         <h1>Applications</h1>
         <AppList data={this.state.data}/>
       </div>
@@ -77,17 +97,7 @@ var App = React.createClass({
   }
 });
 
-//React componets to create new application
-var CreateAppBox = React.createClass({
-  render: function(){
-    return(
-      <div className="createAppForm" >
-        <h1>Create new application</h1>
-        <CreateAppForm url="/CreateApp"/>
-      </div>
-    );
-  }
-});
+//React componet to create new application
 var CreateAppForm = React.createClass({
   handleSubmit: function(evt){
     evt.preventDefault();
@@ -97,20 +107,12 @@ var CreateAppForm = React.createClass({
     }
     if(!body.appName || !body.appDomain) return;
 
-    $.ajax({
-      type:'Post',
-      url:this.props.url,
-      dataType: 'json',
-      cache:'false',
-      data:body,
-      success: function(data){
-        console.log(data);
-      },
-      erorr: function(xhr, status, err){
-        console.log(this.props.url, status, err.toString());
-      }
-    })
+    //send data and url to AppBox commponent and create application
+    //and reload application list because the component owns state
+    var url = this.props.url;
+    this.props.onCreateAppSubmit(body, url);
 
+    //clean inputs after submit
     React.findDOMNode(this.refs.appName).value = '';
     React.findDOMNode(this.refs.appDomain).value = '';
   },
@@ -130,7 +132,6 @@ module.exports = React.createClass({
     return(
       <Layout {...this.props}>
         <div id="container">
-          <CreateAppBox />
           <AppBox url="/fetchApps" pollInterval={2000} />
         </div>
       </Layout>
