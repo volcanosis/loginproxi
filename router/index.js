@@ -58,8 +58,20 @@ module.exports = function(app){
       }).save(function(err){
         if(err) return console.log('Database connection err');
         console.log('Data saved');
+        //TODO:Implement this functionality in a single module
+        //after save data, return all the applications to render on React
+        Application.find({isActive:true}, function(err, applications){
+          var context = {
+            applications:applications.map(function(application){
+              return{
+                appName: application.appName,
+                domain: application.domain
+              };
+            })
+          };
+          return res.json(context);
+        });
       });
-      return res.json({status:'success'});
     }
     return;
   });

@@ -21,22 +21,24 @@ var AppBox = React.createClass({
     });
   },
   handleCreateAppSubmit: function(application, url){
+    //don´t wait untill the request complete
+    //instead set state directly and render de applications
+    var applications = this.state.data;
+    var newApplications = applications.concat([application]);
+    this.setState({data: newApplications});
+
     $.ajax({
       type: 'Post',
       url: url,
       dataType: 'json',
-      cache: 'false',
       data: application,
       success: function(data){
-        console.log(data);
-      },
+        this.setState({data:data.applications});
+      }.bind(this),
       erorr: function(xhr, status, err){
-        console.log(this.props.url, status, err.toString());
-      }
+        console.log(url, status, err.toString());
+      }.bind(this)
     });
-    //TODO:fetch data on success request
-    //mount new applications created
-    this.fetchAppsFromServer();
   },
   getInitialState: function(){
     return {data:[]};
@@ -75,9 +77,13 @@ var AppList = React.createClass({
   }
 });
 var AppEditForm = React.createClass({
+  handleClikEditApp: function(){
+    alert('do not work yet');
+    console.log(this);
+  },
   render: function(){
     return(
-      <button className="btnEditdarApp">editar</button>
+      <button onClick={this.handleClikEditApp} className="btnEditdarApp">edit</button>
     );
   }
 });
@@ -115,6 +121,7 @@ var CreateAppForm = React.createClass({
     //clean inputs after submit
     React.findDOMNode(this.refs.appName).value = '';
     React.findDOMNode(this.refs.appDomain).value = '';
+    return;
   },
   render: function(){
     return(
