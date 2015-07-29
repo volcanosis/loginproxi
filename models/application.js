@@ -3,6 +3,9 @@ var mongoose= require('mongoose');
 var appSchema = mongoose.Schema({
   appName: String,
   domain: String,
+  apis: [{
+    apiName: String
+  }],
   date:{ type: Date, default: Date.now},
   isActive: Boolean
 });
