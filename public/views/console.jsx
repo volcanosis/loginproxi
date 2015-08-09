@@ -2,6 +2,7 @@
 
 //libs
 var $ = require('jquery');
+var _ = require('underscore');
 
 var Layout = require('./layout.jsx');
 var React = require('react');
@@ -14,7 +15,6 @@ var AppBox = React.createClass({
       dataType: 'json',
       cache:false,
       success:function(data){
-        console.log(data);
         this.setState({applications:data.applications});
       }.bind(this),
       error: function(xhr, status, err){
@@ -70,7 +70,7 @@ var AppBox = React.createClass({
     return(
       <div className="appBox">
         <h1>Create new application</h1>
-        <CreateAppForm onCreateAppSubmit={this.handleCreateAppSubmit} url="/CreateApp"/>
+        <CreateAppForm onCreateAppSubmit={this.handleCreateAppSubmit} createAppUrl="/CreateApp" fetchApisUrl="/fetchAPIS"/>
         <CreateAPIForm onCreateAPISubmit={this.handleCreateAPISubmit} url="/CreateAPI"/>
         <h1>Applications</h1>
         <AppList applications={this.state.applications}/>
@@ -82,6 +82,8 @@ var AppList = React.createClass({
   render: function(){
     var ApplicationsNodes = this.props.applications.map(function(application){
       return (
+        //TODO: fix the problem that cause the appID on the list
+        //disapears when new application is created
         <App key={application.appID} appID={application.appID} appName={application.appName}>
           {application.domain} {application.appID}
         </App>
@@ -96,7 +98,7 @@ var AppList = React.createClass({
 });
 var AppEditForm = React.createClass({
   handleClikEditApp: function(){
-    console.log('lets modify this application' + this.props.appID);
+    console.log('lets modify this application ' + this.props.appID);
   },
   render: function(){
     return(
@@ -120,19 +122,27 @@ var App = React.createClass({
   }
 });
 
+var APISSelected = [];
 //React componet to create new application
 var CreateAppForm = React.createClass({
   handleSubmit: function(evt){
     evt.preventDefault();
+    var Apis = _.map(APISSelected, function(Api){
+      return{
+        ApiID: Api
+      }
+    })
     var body = {
       appName: React.findDOMNode(this.refs.appName).value.trim(),
-      appDomain: React.findDOMNode(this.refs.appDomain).value.trim()
+      appDomain: React.findDOMNode(this.refs.appDomain).value.trim(),
+      apis: Apis
     }
-    if(!body.appName || !body.appDomain) return;
+    console.log(Apis);
+    if(!body.appName || !body.appDomain || !body.apis) return;
 
     //send data and url to AppBox commponent and create application
     //and reload application list because the component owns state
-    var url = this.props.url;
+    var url = this.props.createAppUrl;
     this.props.onCreateAppSubmit(body, url);
 
     //clean inputs after submit
@@ -140,12 +150,60 @@ var CreateAppForm = React.createClass({
     React.findDOMNode(this.refs.appDomain).value = '';
     return;
   },
+  fetchAPISFromServer: function(){
+    var url = this.props.fetchApisUrl;
+
+    $.ajax({
+      url: url,
+      dataType: 'json',
+      cache: false,
+      success: function(data){
+        var options = data.APIS.map(function(API){
+          return {
+            value: API.ApiID,
+            label: API.ApiName
+          }
+        })
+        this.setState({options:options});
+      }.bind(this),
+      erorr: function(xhr, status, err){
+        console.log(url, status, err.toString());
+      }.bind(this)
+    });
+  },
+  componentDidMount: function(){
+    this.fetchAPISFromServer();
+  },
+  logChange: function(val){
+    APISSelected = val.split(',')
+  },
+  getInitialState: function(){
+    return {options:[]};
+  },
   render: function(){
+    var Select = require('react-select');
     return(
       <form name="crateAppForm" onSubmit={this.handleSubmit}>
-        <input ref="appName" id="appNameField" type="text" placeholder="App name"/>
-        <input ref="appDomain" id="appDomainField" type="text" placeholder="Domain name" />
-        <ApiSelect url="/fetchAPIS" />
+        <input
+          ref="appName"
+          id="appNameField"
+          type="text"
+          placeholder="App name"
+        />
+        <input
+          ref="appDomain"
+          id="appDomainField"
+          type="text"
+          placeholder="Domain name"
+        />
+        <Select
+            ref="testi"
+            name="apiList"
+            multi={true}
+            options={this.state.options}
+            onChange={this.logChange}
+            placeholder = "Select APIS to use on your application"
+        />
         <button value="Post" className="btnCreateApp" type="submit">Create App</button>
       </form>
     );
@@ -179,51 +237,6 @@ var CreateAPIForm = React.createClass({
         <input ref="baseUrl" id="baseUrlField" type="text" placeholder="base url" />
         <button value="Post" className="btnCreateApi" type="submit">Create API</button>
       </form>
-    );
-  }
-});
-
-var Select = require('react-select');
-var ApiSelect = React.createClass({
-  logChange: function(val){
-    console.log('Selected ' + val)
-  },
-  fetchAPISFromServer: function(){
-    var url = this.props.url;
-
-    $.ajax({
-      url: url,
-      dataType: 'json',
-      cache: false,
-      success: function(data){
-        console.log(data);
-        var options = data.APIS.map(function(API){
-          return {
-            value: API.ApiID,
-            label: API.ApiName
-          }
-        })
-        this.setState({options:options});
-      }.bind(this),
-      erorr: function(xhr, status, err){
-        console.log(url, status, err.toString());
-      }.bind(this)
-    });
-  },
-  componentDidMount: function(){
-    this.fetchAPISFromServer();
-  },
-  getInitialState: function(){
-    return {options:[]};
-  },
-  render: function(){
-    return(
-      <Select
-          name="form-field-name"
-          multi={true}
-          options={this.state.options}
-          onChange={this.logChange}
-      />
     );
   }
 });

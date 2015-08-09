@@ -52,14 +52,16 @@ module.exports = function(app){
     if (!req.xhr) return;
 
     var appName = req.body.appName,
-        domain = req.body.appDomain;
+        domain = req.body.appDomain,
+        apis = req.body.apis;
 
     new Application({
       appName: appName,
       domain: domain,
+      apis: apis,
       isActive: true,
     }).save(function(err){
-      if(err) return console.log('Database connection err');
+      if(err) return console.log('Database connection err ' + err);
       console.log('Application saved');
       //after save data, return all the applications to render on React
       Application.find({isActive:true}, function(err, applications){

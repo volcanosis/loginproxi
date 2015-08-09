@@ -4,7 +4,7 @@ var appSchema = mongoose.Schema({
   appName: String,
   domain: String,
   apis: [{
-    apiName: String
+    ApiID: String
   }],
   date:{ type: Date, default: Date.now},
   isActive: Boolean
