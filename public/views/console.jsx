@@ -197,7 +197,6 @@ var CreateAppForm = React.createClass({
           placeholder="Domain name"
         />
         <Select
-            ref="testi"
             name="apiList"
             multi={true}
             options={this.state.options}
