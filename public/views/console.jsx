@@ -160,7 +160,6 @@ var CreateAPIForm = React.createClass({
       ApiName: React.findDOMNode(this.refs.AppiName).value.trim(),
       baseUrl: React.findDOMNode(this.refs.baseUrl).value.trim()
     }
-    console.log(body)
     if(!body.ApiName || !body.baseUrl) return;
 
     //send data and url to AppBox commponent and create application
