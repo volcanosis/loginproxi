@@ -49,6 +49,7 @@ var AppBox = React.createClass({
       dataType: 'json',
       data: body,
       success: function(data){
+        //TODO:show data on client
         console.log(data)
       },
       erorr: function(xhr, status, err){
@@ -145,7 +146,7 @@ var CreateAppForm = React.createClass({
       <form name="crateAppForm" onSubmit={this.handleSubmit}>
         <input ref="appName" id="appNameField" type="text" placeholder="App name"/>
         <input ref="appDomain" id="appDomainField" type="text" placeholder="Domain name" />
-        <ApiSelect />
+        <ApiSelect url="/fetchAPIS" />
         <button value="Post" className="btnCreateApp" type="submit">Create App</button>
       </form>
     );
@@ -189,20 +190,38 @@ var ApiSelect = React.createClass({
   logChange: function(val){
     console.log('Selected ' + val)
   },
+  fetchAPISFromServer: function(){
+    var url = this.props.url;
+
+    $.ajax({
+      url: url,
+      dataType: 'json',
+      cache: false,
+      success: function(data){
+        console.log(data);
+        var options = data.APIS.map(function(API){
+          return {
+            value: API.ApiID,
+            label: API.ApiName
+          }
+        })
+        this.setState({options:options});
+      }.bind(this),
+      erorr: function(xhr, status, err){
+        console.log(url, status, err.toString());
+      }.bind(this)
+    });
+  },
+  componentDidMount: function(){
+    this.fetchAPISFromServer();
+  },
   getInitialState: function(){
-    return {options:[
-      {value: 'MCT', label: 'MCT'},
-      {value: 'Ristorante', label: 'Ristorante'},
-      {value: 'MCT-2', label: 'MCT-2'},
-      {value: 'Ristorante-4', label: 'Ristorante-4'},
-      {value: 'MCTV8', label: 'MCTV8'}
-    ]};
+    return {options:[]};
   },
   render: function(){
     return(
       <Select
           name="form-field-name"
-          value="one"
           multi={true}
           options={this.state.options}
           onChange={this.logChange}

@@ -144,4 +144,21 @@ module.exports = function(app){
       return res.json(context);
     })
   });
+
+  app.get('/fetchAPIS', function(req, res){
+    API.find({isActive:true}, function(err, APIS){
+      var context = {
+        APIS:APIS.map(function(API){
+          return{
+            ApiID: API._id,
+            ApiName: API.ApiName,
+            baseUrl: API.baseUrl,
+            Methods: API.Methods,
+            status: API.status
+          };
+        })
+      };
+      return res.json(context);
+    })
+  });
 };
