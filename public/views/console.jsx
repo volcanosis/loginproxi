@@ -1,5 +1,6 @@
 'use strict'
 
+//libs
 var $ = require('jquery');
 
 var Layout = require('./layout.jsx');
@@ -47,7 +48,7 @@ var AppBox = React.createClass({
     this.fetchAppsFromServer();
     //TODO: implement technology to fetch data
     //only when a new app is created
-    setInterval(this.fetchAppsFromServer, this.props.pollInterval)
+    //setInterval(this.fetchAppsFromServer, this.props.pollInterval)
   },
   render: function(){
     return(
@@ -128,8 +129,35 @@ var CreateAppForm = React.createClass({
       <form name="crateAppForm" onSubmit={this.handleSubmit}>
         <input ref="appName" id="appNameField" type="text" placeholder="App name"/>
         <input ref="appDomain" id="appDomainField" type="text" placeholder="Domain name" />
+        <ApiSelect />
         <button value="Post" className="btnCreateApp" type="submit">Create App</button>
       </form>
+    );
+  }
+});
+var Select = require('react-select');
+var ApiSelect = React.createClass({
+  logChange: function(val){
+    console.log('Selected ' + val)
+  },
+  getInitialState: function(){
+    return {options:[
+      {value: 'MCT', label: 'MCT'},
+      {value: 'Ristorante', label: 'Ristorante'},
+      {value: 'MCT-2', label: 'MCT-2'},
+      {value: 'Ristorante-4', label: 'Ristorante-4'},
+      {value: 'MCTV8', label: 'MCTV8'}
+    ]};
+  },
+  render: function(){
+    return(
+      <Select
+          name="form-field-name"
+          value="one"
+          multi={true}
+          options={this.state.options}
+          onChange={this.logChange}
+      />
     );
   }
 });
@@ -139,7 +167,7 @@ module.exports = React.createClass({
     return(
       <Layout {...this.props}>
         <div id="container">
-          <AppBox url="/fetchApps" pollInterval={2000} />
+          <AppBox url="/fetchApps" pollInterval={9000} />
         </div>
       </Layout>
     )
