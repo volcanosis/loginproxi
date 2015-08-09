@@ -86,14 +86,27 @@ module.exports = function(app){
       baseUrl: baseUrl,
       Methods: {
         publicMethods: [{
-            method: 'publico1'
+            method: 'publicMethod1'
+          },
+          {
+            method: 'publicMethod1'
+          },
+          {
+            method: 'publicMethod3'
           }
         ],
         privateMethods: [{
-            method: 'privado1'
+            method: 'privateMethod1'
+          },
+          {
+            method: 'privateMethod2'
+          },
+          {
+            method: 'privateMethod3'
           }
         ]
       },
+      status: 'Online',
       isActive: true,
     }).save(function(err){
       if(err) return console.log('Database connection err');
@@ -105,7 +118,8 @@ module.exports = function(app){
             return{
               ApiName: API.ApiName,
               baseUrl: API.baseUrl,
-              Methods: API.Methods
+              Methods: API.Methods,
+              status: API.status
             };
           })
         };

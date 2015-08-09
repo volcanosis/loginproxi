@@ -11,8 +11,10 @@ var APISchema = mongoose.Schema({
       method: String
     }]
   },
-  date:{ type: Date, default: Date.now},
-  isActive: Boolean
+  isActive: Boolean,
+  status: String,
+  date:{ type: Date, default: Date.now}
+
 });
 
 var API = mongoose.model('API', APISchema);
