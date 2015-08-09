@@ -82,7 +82,7 @@ var AppList = React.createClass({
   render: function(){
     var ApplicationsNodes = this.props.applications.map(function(application){
       return (
-        <App key={application.appID} appName={application.appName}>
+        <App key={application.appID} appID={application.appID} appName={application.appName}>
           {application.domain} {application.appID}
         </App>
       );
@@ -96,8 +96,7 @@ var AppList = React.createClass({
 });
 var AppEditForm = React.createClass({
   handleClikEditApp: function(){
-    alert('do not work yet');
-    console.log(this);
+    console.log('lets modify this application' + this.props.appID);
   },
   render: function(){
     return(
@@ -114,7 +113,7 @@ var App = React.createClass({
         </h2>
         <span>{this.props.children}</span>
         <div className="editAppBox">
-          <AppEditForm/>
+          <AppEditForm appID={this.props.appID}/>
         </div>
       </div>
     );
