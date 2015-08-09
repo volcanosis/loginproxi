@@ -42,6 +42,20 @@ var AppBox = React.createClass({
       }.bind(this)
     });
   },
+  handleCreateAPISubmit: function(body, url){
+    $.ajax({
+      type: 'Post',
+      url: url,
+      dataType: 'json',
+      data: body,
+      success: function(data){
+        console.log(data)
+      },
+      erorr: function(xhr, status, err){
+        console.log(url, status, err.toString());
+      }
+    });
+  },
   getInitialState: function(){
     return {applications:[]};
   },
@@ -56,6 +70,7 @@ var AppBox = React.createClass({
       <div className="appBox">
         <h1>Create new application</h1>
         <CreateAppForm onCreateAppSubmit={this.handleCreateAppSubmit} url="/CreateApp"/>
+        <CreateAPIForm onCreateAPISubmit={this.handleCreateAPISubmit} url="/CreateAPI"/>
         <h1>Applications</h1>
         <AppList applications={this.state.applications}/>
       </div>
@@ -136,6 +151,39 @@ var CreateAppForm = React.createClass({
     );
   }
 });
+
+//React componet to create new application
+var CreateAPIForm = React.createClass({
+  handleSubmit: function(evt){
+    evt.preventDefault();
+    var body = {
+      ApiName: React.findDOMNode(this.refs.AppiName).value.trim(),
+      baseUrl: React.findDOMNode(this.refs.baseUrl).value.trim()
+    }
+    console.log(body)
+    if(!body.ApiName || !body.baseUrl) return;
+
+    //send data and url to AppBox commponent and create application
+    //and reload application list because the component owns state
+    var url = this.props.url;
+    this.props.onCreateAPISubmit(body, url);
+
+    //clean inputs after submit
+    React.findDOMNode(this.refs.AppiName).value = '';
+    React.findDOMNode(this.refs.baseUrl).value = '';
+    return;
+  },
+  render: function(){
+    return(
+      <form name="crateAppiForm" onSubmit={this.handleSubmit}>
+        <input ref="AppiName" id="AppiNameField" type="text" placeholder="API name"/>
+        <input ref="baseUrl" id="baseUrlField" type="text" placeholder="base url" />
+        <button value="Post" className="btnCreateApi" type="submit">Create API</button>
+      </form>
+    );
+  }
+});
+
 var Select = require('react-select');
 var ApiSelect = React.createClass({
   logChange: function(val){

@@ -14,8 +14,10 @@ var options = {
   }
 };
 
-//mongoose model to create applications
+//Application model
 var Application = require('../models/application.js');
+//API model
+var API = require('../models/API.js');
 
 //export routes
 module.exports = function(app){
@@ -47,32 +49,69 @@ module.exports = function(app){
   //TODO:add missing properties on data model
   //when app is created like appid etc
   app.post('/CreateApp', function(req, res){
-    if (req.xhr){
-      var appName = req.body.appName,
-          domain = req.body.appDomain;
+    if (!req.xhr) return;
 
-      new Application({
-        appName: appName,
-        domain: domain,
-        isActive: true,
-      }).save(function(err){
-        if(err) return console.log('Database connection err');
-        console.log('Data saved');
-        //after save data, return all the applications to render on React
-        Application.find({isActive:true}, function(err, applications){
-          var context = {
-            applications:applications.map(function(application){
-              return{
-                appName: application.appName,
-                domain: application.domain
-              };
-            })
-          };
-          return res.json(context);
-        });
+    var appName = req.body.appName,
+        domain = req.body.appDomain;
+
+    new Application({
+      appName: appName,
+      domain: domain,
+      isActive: true,
+    }).save(function(err){
+      if(err) return console.log('Database connection err');
+      console.log('Application saved');
+      //after save data, return all the applications to render on React
+      Application.find({isActive:true}, function(err, applications){
+        var context = {
+          applications:applications.map(function(application){
+            return{
+              appName: application.appName,
+              domain: application.domain
+            };
+          })
+        };
+        return res.json(context);
       });
-    }
-    return;
+    });
+  });
+
+  app.post('/CreateAPI', function(req, res){
+    if (!req.xhr) return
+    var apiName = req.body.ApiName,
+        baseUrl = req.body.baseUrl;
+
+    new API({
+      ApiName: apiName,
+      baseUrl: baseUrl,
+      Methods: {
+        publicMethods: [{
+            method: 'publico1'
+          }
+        ],
+        privateMethods: [{
+            method: 'privado1'
+          }
+        ]
+      },
+      isActive: true,
+    }).save(function(err){
+      if(err) return console.log('Database connection err');
+      console.log('API saved');
+      //after save data, return all the applications to render on React
+      API.find({isActive:true}, function(err, APIS){
+        var context = {
+          APIS:APIS.map(function(API){
+            return{
+              ApiName: API.ApiName,
+              baseUrl: API.baseUrl,
+              Methods: API.Methods
+            };
+          })
+        };
+        return res.json(context);
+      });
+    });
   });
 
   //method to fetch application data and
