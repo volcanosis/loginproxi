@@ -7,8 +7,19 @@ body{
 	border: solid 1px rgb(228, 228, 228);
 	padding: 10px;
 }
-.appList{
+.listsContent{
 	width: 50%;
+	background: gray;
+	margin: 0 auto;
+}
+.applicationsBox .apisBox{
+	width: 40%;
+  margin:5px;
+  padding: 1em;
+  background: white;
+}
+.applicationsBox{
+	float:left;
 }
 .app{
 	margin-bottom: 1em;
@@ -21,6 +32,23 @@ body{
 }
 .app:nth-child(2n){
 	background-color: #4557B3;
+  color: #fff;
+}
+
+.apisBox{
+	float:right;
+}
+.api{
+	margin-bottom: 1em;
+	border: solid 1px rgb(195, 195, 195);
+	padding: 1em;
+	border-radius: 2px;
+	background-color: #89CA81;
+	color:#fff;
+	box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
+}
+.api:nth-child(2n){
+	background-color: #3DBFD0;
   color: #fff;
 }
 .editAppBox{
