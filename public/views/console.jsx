@@ -14,7 +14,8 @@ var AppBox = React.createClass({
       dataType: 'json',
       cache:false,
       success:function(data){
-        this.setState({data:data.applications});
+        console.log(data);
+        this.setState({applications:data.applications});
       }.bind(this),
       error: function(xhr, status, err){
         console.log(this.props.url, status, err.toString());
@@ -24,9 +25,9 @@ var AppBox = React.createClass({
   handleCreateAppSubmit: function(application, url){
     //don´t wait untill the request complete
     //instead set state directly and render de applications
-    var applications = this.state.data;
+    var applications = this.state.applications;
     var newApplications = applications.concat([application]);
-    this.setState({data: newApplications});
+    this.setState({applications: newApplications});
 
     $.ajax({
       type: 'Post',
@@ -34,7 +35,7 @@ var AppBox = React.createClass({
       dataType: 'json',
       data: application,
       success: function(data){
-        this.setState({data:data.applications});
+        this.setState({applications:data.applications});
       }.bind(this),
       erorr: function(xhr, status, err){
         console.log(url, status, err.toString());
@@ -42,7 +43,7 @@ var AppBox = React.createClass({
     });
   },
   getInitialState: function(){
-    return {data:[]};
+    return {applications:[]};
   },
   componentDidMount: function(){
     this.fetchAppsFromServer();
@@ -56,23 +57,23 @@ var AppBox = React.createClass({
         <h1>Create new application</h1>
         <CreateAppForm onCreateAppSubmit={this.handleCreateAppSubmit} url="/CreateApp"/>
         <h1>Applications</h1>
-        <AppList data={this.state.data}/>
+        <AppList applications={this.state.applications}/>
       </div>
     );
   }
 });
 var AppList = React.createClass({
   render: function(){
-    var AppsNodes = this.props.data.map(function(app){
+    var ApplicationsNodes = this.props.applications.map(function(application){
       return (
-        <App appName={app.appName}>
-          {app.domain}
+        <App key={application.appID} appName={application.appName}>
+          {application.domain} {application.appID}
         </App>
       );
     })
     return(
       <div className="appList">
-        {AppsNodes}
+        {ApplicationsNodes}
       </div>
     );
   }

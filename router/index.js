@@ -82,6 +82,7 @@ module.exports = function(app){
       var context = {
         applications:applications.map(function(application){
           return{
+            appID: application._id,
             appName: application.appName,
             domain: application.domain
           };
