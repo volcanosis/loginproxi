@@ -2,24 +2,32 @@ body{
 	font-family: 'Roboto', sans-serif;
 	background-color: #E0E0E0;
 }
-.createAppBox{
+.consoleBox{
 	margin:15px;
 	border: solid 1px rgb(228, 228, 228);
 	padding: 10px;
 }
+.createAppForm{
+	background-color: #fff;
+  padding: 1em;
+  border-radius: 2px;
+  width: 203px;
+	margin-bottom: 10px;
+}
+.createApiForm{
+	background-color: #fff;
+  padding: 1em;
+  border-radius: 2px;
+  width: 203px;
+}
 .listsContent{
-	width: 50%;
-	background: gray;
-	margin: 0 auto;
+
 }
 .applicationsBox .apisBox{
-	width: 40%;
-  margin:5px;
-  padding: 1em;
-  background: white;
+
 }
 .applicationsBox{
-	float:left;
+
 }
 .app{
 	margin-bottom: 1em;
@@ -36,7 +44,7 @@ body{
 }
 
 .apisBox{
-	float:right;
+
 }
 .api{
 	margin-bottom: 1em;
