@@ -8,14 +8,27 @@ var Layout = require('./layout.jsx');
 var React = require('react');
 
 //components for check applications
-var AppBox = React.createClass({
+var ConsoleBox = React.createClass({
   fetchAppsFromServer: function(){
     $.ajax({
-      url: this.props.url,
+      url: this.props.fetchAppsUrl,
       dataType: 'json',
       cache:false,
       success:function(data){
         this.setState({applications:data.applications});
+      }.bind(this),
+      error: function(xhr, status, err){
+        console.log(this.props.url, status, err.toString());
+      }.bind(this)
+    });
+  },
+  fetchApisFromServer: function(){
+    $.ajax({
+      url: this.props.fetchApisUrl,
+      dataType: 'json',
+      cache:false,
+      success:function(data){
+        this.setState({APIS:data.APIS});
       }.bind(this),
       error: function(xhr, status, err){
         console.log(this.props.url, status, err.toString());
@@ -43,49 +56,71 @@ var AppBox = React.createClass({
     });
   },
   handleCreateAPISubmit: function(body, url){
+    var apis = this.state.APIS;
+    var newApi = apis.concat([body]);
+    this.setState({APIS: newApi});
+
     $.ajax({
       type: 'Post',
       url: url,
       dataType: 'json',
       data: body,
       success: function(data){
-        //TODO:show data on client
-        console.log(data)
-      },
+        this.setState({APIS:data.APIS});
+      }.bind(this),
       erorr: function(xhr, status, err){
         console.log(url, status, err.toString());
-      }
+      }.bind(this)
     });
   },
   getInitialState: function(){
-    return {applications:[]};
+    return {
+      applications:[],
+      APIS:[]
+    };
   },
   componentDidMount: function(){
     this.fetchAppsFromServer();
+    this.fetchApisFromServer();
     //TODO: implement technology to fetch data
     //only when a new app is created
     //setInterval(this.fetchAppsFromServer, this.props.pollInterval)
   },
+  logState: function(){
+    console.log(this.state)
+  },
   render: function(){
     return(
-      <div className="appBox">
-        <h1>Create new application</h1>
-        <CreateAppForm onCreateAppSubmit={this.handleCreateAppSubmit} createAppUrl="/CreateApp" fetchApisUrl="/fetchAPIS"/>
-        <CreateAPIForm onCreateAPISubmit={this.handleCreateAPISubmit} url="/CreateAPI"/>
-        <h1>Applications</h1>
-        <AppList applications={this.state.applications}/>
+      <div className="consoleBox">
+        <div className="createAppForm">
+          <button onClick={this.logState}>checkState</button>
+          <h1>Create new application</h1>
+          <CreateAppForm onCreateAppSubmit={this.handleCreateAppSubmit} createAppUrl="/CreateApp" fetchApisUrl="/fetchAPIS"/>
+        </div>
+        <div className="createApiForm">
+          <h1>Create new API</h1>
+          <CreateAPIForm onCreateAPISubmit={this.handleCreateAPISubmit} url="/CreateAPI"/>
+        </div>
+        <div className="listsContent">
+          <div className="applicationsBox">
+            <h1>Applications</h1>
+            <AppList applications={this.state.applications}/>
+          </div>
+          <div className="apisBox">
+            <h1>APIS</h1>
+            <ApiList APIS={this.state.APIS}></ApiList>
+          </div>
+        </div>
       </div>
     );
   }
 });
 var AppList = React.createClass({
   render: function(){
-    var ApplicationsNodes = this.props.applications.map(function(application){
+    var ApplicationsNodes = this.props.applications.map(function(application, index){
       return (
-        //TODO: fix the problem that cause the appID on the list
-        //disapears when new application is created
-        <App key={application.appID} appID={application.appID} appName={application.appName}>
-          {application.domain} {application.appID}
+        <App key={index} appID={application.appID} appName={application.appName}>
+          {application.domain}
         </App>
       );
     })
@@ -122,7 +157,46 @@ var App = React.createClass({
   }
 });
 
-var APISSelected = [];
+var ApiList = React.createClass({
+  render: function(){
+    var ApisNodes = this.props.APIS.map(function(API,index){
+      return (
+        //API has ApiID, ApiName, baseUrl, Methods, status
+        <Api key={index} apiData={API}>
+
+        </Api>
+      );
+    })
+    return(
+      <div className="apiList">
+        {ApisNodes}
+      </div>
+    );
+  }
+});
+
+var Api = React.createClass({
+  render: function(){
+    return(
+      <div className="api">
+        <h2>
+          {this.props.apiData.ApiName}
+        </h2>
+        <span>
+          base url: {this.props.apiData.ApiName}
+        </span><br/>
+        <span>
+          Status: {this.props.apiData.status}
+          <div className={this.props.apiData.status + " status"}></div>
+        </span><br/>
+      </div>
+    )
+  }
+})
+
+//value of the hidden input on select that contains
+//APIS selected
+var APISSelected = []; //to save the hidden input field
 //React componet to create new application
 var CreateAppForm = React.createClass({
   handleSubmit: function(evt){
@@ -137,10 +211,10 @@ var CreateAppForm = React.createClass({
       appDomain: React.findDOMNode(this.refs.appDomain).value.trim(),
       apis: Apis
     }
-    console.log(Apis);
+    console.log(this.state);
     if(!body.appName || !body.appDomain || !body.apis) return;
 
-    //send data and url to AppBox commponent and create application
+    //send data and url to ConsoleBox commponent and create application
     //and reload application list because the component owns state
     var url = this.props.createAppUrl;
     this.props.onCreateAppSubmit(body, url);
@@ -211,15 +285,38 @@ var CreateAppForm = React.createClass({
 
 //React componet to create new application
 var CreateAPIForm = React.createClass({
+  createRouteInput: function(){
+    var count = this.state.Methods.length;
+    var methods = this.state.Methods;
+    var newmethods = methods.concat(['method' + count]);
+    this.setState({Methods: newmethods});
+
+  /*if(this.state.Methods.length > 0){
+      var Methods = this.state.Methods.map(function(method){
+        return{
+          public: React.findDOMNode(this.refs.method0).value.trim()
+        }
+      })
+    }*/
+    var strMethods = []
+    for (var i= 0; i <= this.state.Methods.length; i++){
+      var index = i.toString();
+      var asd = 'method' + i;
+      console.log(asd);
+      strMethods.push(React.findDOMNode(this.refs['method' + index.toString()]).value.trim());
+    }
+    console.log(strMethods)
+  },
   handleSubmit: function(evt){
     evt.preventDefault();
+
     var body = {
       ApiName: React.findDOMNode(this.refs.AppiName).value.trim(),
       baseUrl: React.findDOMNode(this.refs.baseUrl).value.trim()
     }
     if(!body.ApiName || !body.baseUrl) return;
 
-    //send data and url to AppBox commponent and create application
+    //send data and url to ConsoleBox commponent and create application
     //and reload application list because the component owns state
     var url = this.props.url;
     this.props.onCreateAPISubmit(body, url);
@@ -229,11 +326,25 @@ var CreateAPIForm = React.createClass({
     React.findDOMNode(this.refs.baseUrl).value = '';
     return;
   },
+  getInitialState: function(){
+    return({Methods:[]})
+  },
+  deleteInput: function(id){
+    console.log('letsdelete!');
+    console.log(id);
+  },
   render: function(){
+    var InputNodes = this.state.Methods.map(function(method,index){
+      return(
+        <input key={index} ref={method} type="text" placeholder={method} />
+      )
+    })
     return(
       <form name="crateAppiForm" onSubmit={this.handleSubmit}>
         <input ref="AppiName" id="AppiNameField" type="text" placeholder="API name"/>
         <input ref="baseUrl" id="baseUrlField" type="text" placeholder="base url" />
+        <button onClick={this.createRouteInput}>Create Route</button>
+        {InputNodes}
         <button value="Post" className="btnCreateApi" type="submit">Create API</button>
       </form>
     );
@@ -245,7 +356,7 @@ module.exports = React.createClass({
     return(
       <Layout {...this.props}>
         <div id="container">
-          <AppBox url="/fetchApps" pollInterval={9000} />
+          <ConsoleBox fetchApisUrl="/fetchAPIS" fetchAppsUrl="/fetchApps" pollInterval={9000} />
         </div>
       </Layout>
     )
