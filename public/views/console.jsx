@@ -86,20 +86,16 @@ var ConsoleBox = React.createClass({
     //only when a new app is created
     //setInterval(this.fetchAppsFromServer, this.props.pollInterval)
   },
-  logState: function(){
-    console.log(this.state)
-  },
   render: function(){
     return(
       <div className="consoleBox">
         <div className="createAppForm">
-          <button onClick={this.logState}>checkState</button>
           <h1>Create new application</h1>
-          <CreateAppForm onCreateAppSubmit={this.handleCreateAppSubmit} createAppUrl="/CreateApp" fetchApisUrl="/fetchAPIS"/>
+          <CreateAppForm onCreateAppSubmit={this.handleCreateAppSubmit} createAppUrl="/Application" fetchApisUrl="/APIS"/>
         </div>
         <div className="createApiForm">
           <h1>Create new API</h1>
-          <CreateAPIForm onCreateAPISubmit={this.handleCreateAPISubmit} url="/CreateAPI"/>
+          <CreateAPIForm onCreateAPISubmit={this.handleCreateAPISubmit} url="/API"/>
         </div>
         <div className="listsContent">
           <div className="applicationsBox">
@@ -174,7 +170,6 @@ var ApiList = React.createClass({
     );
   }
 });
-
 var Api = React.createClass({
   render: function(){
     return(
@@ -285,36 +280,27 @@ var CreateAppForm = React.createClass({
 
 //React componet to create new application
 var CreateAPIForm = React.createClass({
-  createRouteInput: function(){
-    var count = this.state.Methods.length;
-    var methods = this.state.Methods;
-    var newmethods = methods.concat(['method' + count]);
-    this.setState({Methods: newmethods});
+  createRouteInput: function(event){
+    event.preventDefault();
+    //if (this.state.MethodsReady.length)
+    if (this.state.Methods.length === 0 || this.state.Methods.length === this.state.MethodsReady.length){
+      var count = this.state.Methods.length;
+      var methods = this.state.Methods;
+      var newmethods = methods.concat(['method' + count]);
+      this.setState({Methods: newmethods});
+    } else alert('first you must save the method');
 
-  /*if(this.state.Methods.length > 0){
-      var Methods = this.state.Methods.map(function(method){
-        return{
-          public: React.findDOMNode(this.refs.method0).value.trim()
-        }
-      })
-    }*/
-    var strMethods = []
-    for (var i= 0; i <= this.state.Methods.length; i++){
-      var index = i.toString();
-      var asd = 'method' + i;
-      console.log(asd);
-      strMethods.push(React.findDOMNode(this.refs['method' + index.toString()]).value.trim());
-    }
-    console.log(strMethods)
   },
   handleSubmit: function(evt){
     evt.preventDefault();
 
     var body = {
       ApiName: React.findDOMNode(this.refs.AppiName).value.trim(),
-      baseUrl: React.findDOMNode(this.refs.baseUrl).value.trim()
+      baseUrl: React.findDOMNode(this.refs.baseUrl).value.trim(),
+      Methods: this.state.MethodsReady
     }
-    if(!body.ApiName || !body.baseUrl) return;
+    console.log(body.Methods.length)
+    if(!body.ApiName || !body.baseUrl || body.Methods.length === 0) return;
 
     //send data and url to ConsoleBox commponent and create application
     //and reload application list because the component owns state
@@ -324,39 +310,123 @@ var CreateAPIForm = React.createClass({
     //clean inputs after submit
     React.findDOMNode(this.refs.AppiName).value = '';
     React.findDOMNode(this.refs.baseUrl).value = '';
+
+    //restart state
+    this.setState({
+      Methods:[],
+      MethodsReady:[]
+    })
     return;
   },
   getInitialState: function(){
-    return({Methods:[]})
+    return({
+      Methods:[],
+      MethodsReady:[]
+    })
   },
   deleteInput: function(id){
     console.log('letsdelete!');
     console.log(id);
   },
+  logState: function(){
+    console.log(this.state)
+  },
+  updateStates: function(val){
+    var methods = this.state.MethodsReady;
+    var newmethod = methods.concat([val]);
+    this.setState({MethodsReady: newmethod});
+  },
   render: function(){
-    var InputNodes = this.state.Methods.map(function(method,index){
-      return(
-        <input key={index} ref={method} type="text" placeholder={method} />
-      )
-    })
     return(
       <form name="crateAppiForm" onSubmit={this.handleSubmit}>
         <input ref="AppiName" id="AppiNameField" type="text" placeholder="API name"/>
         <input ref="baseUrl" id="baseUrlField" type="text" placeholder="base url" />
+        <button onClick={this.logState}>log state</button>
         <button onClick={this.createRouteInput}>Create Route</button>
-        {InputNodes}
+        <InputMethodList Methods={this.state.Methods} updateStates={this.updateStates}/>
         <button value="Post" className="btnCreateApi" type="submit">Create API</button>
       </form>
     );
   }
 });
+var InputMethodList = React.createClass({
+  render: function(){
+    var updateStates = this.props.updateStates;
+    var InputNodes = this.props.Methods.map(function(method, index){
+      return(
+        <InputMethod key={index} placeholder={method} pushState={updateStates}/>
+      )
+    })
+    return(
+      <div className="inputList">
+        {InputNodes}
+      </div>
+    )
+  }
+});
+var InputMethod = React.createClass({
+  getInitialState: function(){
+    return({
+      method:'',
+      methodtype: 'private',
+      verb:'GET',
+      ready: false
+    })
+  },
+  handleClick: function(event){
+    event.preventDefault();
+    if (this.state.methodtype === 'private'){
+      this.setState({methodtype: 'public'});
+    }
+    else {
+      this.setState({methodtype: 'private'});
+    }
+  },
+  handleChange: function(event){
+    this.setState({method: event.target.value});
+  },
+  pushState: function(event){
+    event.preventDefault();
+    //check if there is and input method
+    if(!this.state.method) return;
+
+    this.setState({ready: true});
+    this.props.pushState(this.state);
+  },
+  handleChangeVerb: function(event){
+    this.setState({verb: event.target.value.trim()});
+  },
+  render: function(){
+    return(
+      <div className="inputMethod">
+        <input
+          disabled={this.state.ready}
+          ref="inputfield"
+          type="text"
+          placeholder={this.props.placeholder}
+          onChange={this.handleChange} />
+        <select disabled={this.state.ready} value={this.state.verb} onChange={this.handleChangeVerb}>
+          <option value="GET">GET</option>
+          <option value="POST">POST</option>
+          <option value="PUT">PUT</option>
+          <option value="DELETE">DELETE</option>
+          <option value="PATCH">PATCH</option>
+        </select>
+        <button disabled={this.state.ready} onClick={this.handleClick}>
+          {this.state.methodtype}
+        </button>
+        <button ref="buttonSave" onClick={this.pushState}>save</button>
+      </div>
+    )
+  }
+})
 
 module.exports = React.createClass({
   render:function render(){
     return(
       <Layout {...this.props}>
         <div id="container">
-          <ConsoleBox fetchApisUrl="/fetchAPIS" fetchAppsUrl="/fetchApps" pollInterval={9000} />
+          <ConsoleBox fetchApisUrl="/APIS" fetchAppsUrl="/Applications" pollInterval={9000} />
         </div>
       </Layout>
     )

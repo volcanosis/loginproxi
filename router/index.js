@@ -82,37 +82,17 @@ module.exports = function(app){
   app.post('/API', function(req, res){
     if (!req.xhr) return
     var apiName = req.body.ApiName,
-        baseUrl = req.body.baseUrl;
+        baseUrl = req.body.baseUrl,
+        methods = req.body.Methods;
 
     new API({
       ApiName: apiName,
       baseUrl: baseUrl,
-      Methods: {
-        publicMethods: [{
-            method: 'publicMethod1'
-          },
-          {
-            method: 'publicMethod1'
-          },
-          {
-            method: 'publicMethod3'
-          }
-        ],
-        privateMethods: [{
-            method: 'privateMethod1'
-          },
-          {
-            method: 'privateMethod2'
-          },
-          {
-            method: 'privateMethod3'
-          }
-        ]
-      },
+      Methods: methods,
       status: 'Online',
       isActive: true,
     }).save(function(err){
-      if(err) return console.log('Database connection err');
+      if(err) return console.log('Database connection err' + err);
       console.log('API saved');
       //after save data, return all the applications to render on React
       API.find({isActive:true}, function(err, APIS){
