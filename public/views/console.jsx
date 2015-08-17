@@ -328,9 +328,6 @@ var CreateAPIForm = React.createClass({
     console.log('letsdelete!');
     console.log(id);
   },
-  logState: function(){
-    console.log(this.state)
-  },
   updateStates: function(val){
     var methods = this.state.MethodsReady;
     var newmethod = methods.concat([val]);
@@ -341,7 +338,6 @@ var CreateAPIForm = React.createClass({
       <form name="crateAppiForm" onSubmit={this.handleSubmit}>
         <input ref="AppiName" id="AppiNameField" type="text" placeholder="API name"/>
         <input ref="baseUrl" id="baseUrlField" type="text" placeholder="base url" />
-        <button onClick={this.logState}>log state</button>
         <button onClick={this.createRouteInput}>Create Route</button>
         <InputMethodList Methods={this.state.Methods} updateStates={this.updateStates}/>
         <button value="Post" className="btnCreateApi" type="submit">Create API</button>
