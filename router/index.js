@@ -48,7 +48,7 @@ module.exports = function(app){
   //method to create applications
   //TODO:add missing properties on data model
   //when app is created like appid etc
-  app.post('/CreateApp', function(req, res){
+  app.post('/Application', function(req, res){
     if (!req.xhr) return;
 
     var appName = req.body.appName,
@@ -79,7 +79,7 @@ module.exports = function(app){
     });
   });
 
-  app.post('/CreateAPI', function(req, res){
+  app.post('/API', function(req, res){
     if (!req.xhr) return
     var apiName = req.body.ApiName,
         baseUrl = req.body.baseUrl;
@@ -133,7 +133,7 @@ module.exports = function(app){
 
   //method to fetch application data and
   //exposed to the users
-  app.get('/fetchApps', function(req, res){
+  app.get('/Applications', function(req, res){
     Application.find({isActive:true}, function(err, applications){
       var context = {
         applications:applications.map(function(application){
@@ -148,7 +148,7 @@ module.exports = function(app){
     })
   });
 
-  app.get('/fetchAPIS', function(req, res){
+  app.get('/APIS', function(req, res){
     API.find({isActive:true}, function(err, APIS){
       var context = {
         APIS:APIS.map(function(API){
