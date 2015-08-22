@@ -144,7 +144,9 @@ var App = React.createClass({
         <h2>
           {this.props.appName}
         </h2>
-        <span>{this.props.children}</span>
+        <span>ApplicationID: {this.props.appID}</span>
+        <br/>
+        <span>Domain: {this.props.children}</span>
         <div className="editAppBox">
           <AppEditForm appID={this.props.appID}/>
         </div>
@@ -178,7 +180,7 @@ var Api = React.createClass({
           {this.props.apiData.ApiName}
         </h2>
         <span>
-          base url: {this.props.apiData.ApiName}
+          base url: {this.props.apiData.baseUrl}
         </span><br/>
         <span>
           Status: {this.props.apiData.status}
@@ -393,6 +395,9 @@ var InputMethod = React.createClass({
     this.setState({verb: event.target.value.trim()});
   },
   render: function(){
+    var editButtonStyle = {
+      display: this.state.ready ? 'inline' : 'none'
+    }
     return(
       <div className="inputMethod">
         <input
@@ -411,7 +416,8 @@ var InputMethod = React.createClass({
         <button disabled={this.state.ready} onClick={this.handleClick}>
           {this.state.methodtype}
         </button>
-        <button ref="buttonSave" onClick={this.pushState}>save</button>
+        <button ref="buttonSave" onClick={this.pushState}>Save</button>
+        <button style={editButtonStyle} onClick={this.handleEdit}>Edit</button>
       </div>
     )
   }
