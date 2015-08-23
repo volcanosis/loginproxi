@@ -144,11 +144,24 @@ module.exports = function(app){
     })
   });
 
-  // 404 template
+ //check 500 err
+  app.get('/fail', function(req, res){
+    throw new Error('internal server error!');
+  });
+
+  //Handle 404 err
   app.use(function(req, res) {
     res.render('404', {
       title: '404',
       url: req.url
     });
   });
+
+  //Handle 500 err
+	app.use(function(err, req, res, next){
+		console.error(err.stack);
+		res.render('500',{
+      title: 'Internal server error'
+    });
+	});
 };

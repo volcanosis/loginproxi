@@ -15,12 +15,12 @@ module.exports = React.createClass({
             {this.props.title}
           </title>
         </head>
-        <body>
+        <body style={this.props.style}>
           <h1>Volcanosis developer console</h1>
           {this.props.children}
         </body>
         <script src="/bundle.js"></script>
-  
+
       </html>
     );
   }
