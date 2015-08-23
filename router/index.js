@@ -30,16 +30,15 @@ module.exports = function(app){
     default:
       throw new Error('Unknown execution enviroment: ' + app.get('env'));
   }
-
   //when user open the app redirect /console
   app.get('/', function(req, res){
     return res.redirect(303, '/console');
   });
 
   //developer console to create and configure
-  //application
+  //application and APIS
   app.get('/console',function(req, res){
-    res.render('console',{
+    res.render(req.url,{
       title:'developer console',
       organization:'Volcanosis'
     });
@@ -143,5 +142,13 @@ module.exports = function(app){
       };
       return res.json(context);
     })
+  });
+
+  // 404 template
+  app.use(function(req, res) {
+    res.render('404', {
+      title: '404',
+      url: req.url
+    });
   });
 };

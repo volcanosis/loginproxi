@@ -424,13 +424,12 @@ var InputMethod = React.createClass({
 })
 
 module.exports = React.createClass({
+  displayName: 'console',
   render:function render(){
     return(
-      <Layout {...this.props}>
-        <div id="container">
-          <ConsoleBox fetchApisUrl="/APIS" fetchAppsUrl="/Applications" pollInterval={9000} />
-        </div>
-      </Layout>
+      <div id="container">
+        <ConsoleBox fetchApisUrl="/APIS" fetchAppsUrl="/Applications" pollInterval={9000} />
+      </div>
     )
   }
 });
