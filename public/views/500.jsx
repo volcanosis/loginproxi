@@ -28,7 +28,9 @@ module.exports = React.createClass({
     return (
       <Layout {...this.props} style={layoutStyle}>
         <h1 style={h1Stlye}>Internal Server Error</h1>
-        <p style={pStyle}>awwi something went wrong, please reload or conctact the administrator if the problem persist</p>
+        <p style={pStyle}>awwi something went wrong, please reload or conctact the administrator if the problem persist
+        contact volcanosis team
+        </p>
       </Layout>
     );
   }
