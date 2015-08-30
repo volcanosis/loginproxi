@@ -144,6 +144,15 @@ module.exports = function(app){
     })
   });
 
+  app.get('/team', function(req, res){
+    res.render(req.url,{
+      team:[
+        "Sergio Audel Ortiz Gutierrez",
+        "Luis Alonso Valdovinos Valencia"
+    ]
+    })
+  })
+
  //check 500 err
   app.get('/fail', function(req, res){
     throw new Error('internal server error!');
