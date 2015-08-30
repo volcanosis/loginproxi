@@ -1,5 +1,4 @@
-body{
-	font-family: 'Roboto', sans-serif;
+/*body{
 	background-color: #E0E0E0;
 }
 .consoleBox{
@@ -61,7 +60,7 @@ body{
 }
 .editAppBox{
 	text-align: right;
-}
+}*/
 .status {
   width: 10px;
   height: 10px;
@@ -79,4 +78,15 @@ body{
 .Offline{
 	background: rgb(255, 200, 7);
 	border: solid 2px #fff;
+}
+.demo-card-wide.mdl-card {
+  width: 512px;
+}
+.demo-card-wide > .mdl-card__title {
+  color: #fff;
+  height: 176px;
+  background: url('../img/Cvolcano.jpg') center / cover;
+}
+.demo-card-wide > .mdl-card__menu {
+  color: #fff;
 }

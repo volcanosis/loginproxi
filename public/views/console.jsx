@@ -17,7 +17,7 @@ var ConsoleBox = React.createClass({
       success:function(data){
         this.setState({applications:data.applications});
       }.bind(this),
-      error: function(xhr, status, err){
+      error: function(xhr, statu, err){
         console.log(this.props.url, status, err.toString());
       }.bind(this)
     });
@@ -128,27 +128,49 @@ var AppList = React.createClass({
   }
 });
 var AppEditForm = React.createClass({
-  handleClikEditApp: function(){
+  handleClikEditApp: function(e){
+    e.preventDefault();
     console.log('lets modify this application ' + this.props.appID);
   },
   render: function(){
+    var mdClass = "mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent ";
     return(
-      <button onClick={this.handleClikEditApp} className="btnEditdarApp">edit</button>
+        <button
+          onClick={this.handleClikEditApp}
+          className={mdClass + "btnEditarApp"}>
+          edit
+        </button>
     );
   }
 });
 var App = React.createClass({
+  componentDidUpdate: function(){
+    /*
+     *To update jsclases on MDL
+     *A deeper description of the
+     *componentHandler is given in
+     *https://github.com/jasonmayes/mdl-component-design-pattern
+     */
+    componentHandler.upgradeDom();
+  },
   render: function(){
     return(
-      <div className="app">
-        <h2>
-          {this.props.appName}
-        </h2>
-        <span>ApplicationID: {this.props.appID}</span>
-        <br/>
-        <span>Domain: {this.props.children}</span>
-        <div className="editAppBox">
+      <div className="demo-card-wide mdl-card mdl-shadow--2dp">
+        <div className="mdl-card__title">
+          <h2 className="mdl-card__title-text">{this.props.appName}</h2>
+        </div>
+        <div className="mdl-card__supporting-text">
+          <span>ApplicationID: {this.props.appID}</span>
+          <br/>
+          <span>Domain: {this.props.children}</span>
+        </div>
+        <div className="mdl-card__actions mdl-card--border">
           <AppEditForm appID={this.props.appID}/>
+        </div>
+        <div className="mdl-card__menu">
+          <button className="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+            <i className="material-icons">share</i>
+          </button>
         </div>
       </div>
     );
@@ -173,19 +195,36 @@ var ApiList = React.createClass({
   }
 });
 var Api = React.createClass({
+  componentDidUpdate: function(){
+    /*
+     *To update jsclases on MDL
+     *A deeper description of the
+     *componentHandler is given in
+     *https://github.com/jasonmayes/mdl-component-design-pattern
+     */
+    componentHandler.upgradeDom();
+  },
   render: function(){
     return(
-      <div className="api">
-        <h2>
-          {this.props.apiData.ApiName}
-        </h2>
-        <span>
-          base url: {this.props.apiData.baseUrl}
-        </span><br/>
-        <span>
+      <div className="demo-card-wide mdl-card mdl-shadow--2dp">
+        <div className="mdl-card__title">
+          <h2 className="mdl-card__title-text">{this.props.apiData.ApiName}</h2>
+        </div>
+        <div className="mdl-card__supporting-text">
+          <span>ApplicationID: {this.props.appID}</span>
+          <br/>
+          <span>base url: {this.props.apiData.baseUrl}</span>
+          <br/>
           Status: {this.props.apiData.status}
-          <div className={this.props.apiData.status + " status"}></div>
-        </span><br/>
+        </div>
+        <div className="mdl-card__actions mdl-card--border">
+            <div className={this.props.apiData.status + " status"}></div>
+        </div>
+        <div className="mdl-card__menu">
+          <button className="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+            <i className="material-icons">share</i>
+          </button>
+        </div>
       </div>
     )
   }
