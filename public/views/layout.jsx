@@ -3,6 +3,9 @@
 var React = require('react');
 
 module.exports = React.createClass({
+  handleTitleClick: function(){
+    window.location = '/console'
+  },
   render:function render(){
     return(
       <html>
@@ -23,7 +26,7 @@ module.exports = React.createClass({
           <div className="mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
             <header className="mdl-layout__header">
               <div className="mdl-layout__header-row">
-                <span className="mdl-layout-title">Volcanosis developers</span>
+                <span className="mdl-layout-title" onClick={this.handleTitleClick}>Volcanosis developers</span>
                 <div className="mdl-layout-spacer"></div>
                 <div className="mdl-textfield mdl-js-textfield mdl-textfield--expandable mdl-textfield--floating-label mdl-textfield--align-right">
                   <label className="mdl-button mdl-js-button mdl-button--icon" htmlFor="fixed-header-drawer-exp">
