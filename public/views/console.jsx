@@ -4,7 +4,6 @@
 var $ = require('jquery');
 var _ = require('underscore');
 
-var Layout = require('./layout.jsx');
 var React = require('react');
 
 //components for check applications
@@ -88,21 +87,20 @@ var ConsoleBox = React.createClass({
   },
   render: function(){
     return(
-      <div className="consoleBox">
-        <div className="createAppForm">
-          <h1>Create new application</h1>
+      <div className="mdl-grid">
+        <div className="createAppForm mdl-cell mdl-cell--6-col">
           <CreateAppForm onCreateAppSubmit={this.handleCreateAppSubmit} createAppUrl="/Application" fetchApisUrl="/APIS"/>
         </div>
-        <div className="createApiForm">
+        <div className="createApiForm mdl-cell mdl-cell--6-col">
           <h1>Create new API</h1>
           <CreateAPIForm onCreateAPISubmit={this.handleCreateAPISubmit} url="/API"/>
         </div>
-        <div className="listsContent">
-          <div className="applicationsBox">
+        <div className="listsContent mdl-grid">
+          <div className="applicationsBox mdl-cell mdl-cell--6-col">
             <h1>Applications</h1>
             <AppList applications={this.state.applications}/>
           </div>
-          <div className="apisBox">
+          <div className="apisBox mdl-cell mdl-cell--6-col">
             <h1>APIS</h1>
             <ApiList APIS={this.state.APIS}></ApiList>
           </div>
@@ -206,19 +204,18 @@ var Api = React.createClass({
   },
   render: function(){
     return(
-      <div className="demo-card-wide mdl-card mdl-shadow--2dp">
+      <div className="demo-card-wide mdl-card mdl-shadow--4dp">
         <div className="mdl-card__title">
           <h2 className="mdl-card__title-text">{this.props.apiData.ApiName}</h2>
         </div>
         <div className="mdl-card__supporting-text">
-          <span>ApplicationID: {this.props.appID}</span>
+          <span>API: {this.props.apiData.ApiID}</span>
           <br/>
           <span>base url: {this.props.apiData.baseUrl}</span>
-          <br/>
-          Status: {this.props.apiData.status}
         </div>
         <div className="mdl-card__actions mdl-card--border">
-            <div className={this.props.apiData.status + " status"}></div>
+            <div id="status" className={this.props.apiData.status + " status"}></div>
+            <span htmlFor="status" className="mdl-tooltip">{this.props.apiData.status}</span>
         </div>
         <div className="mdl-card__menu">
           <button className="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
@@ -293,28 +290,33 @@ var CreateAppForm = React.createClass({
   render: function(){
     var Select = require('react-select');
     return(
-      <form name="crateAppForm" onSubmit={this.handleSubmit}>
-        <input
-          ref="appName"
-          id="appNameField"
-          type="text"
-          placeholder="App name"
-        />
-        <input
-          ref="appDomain"
-          id="appDomainField"
-          type="text"
-          placeholder="Domain name"
-        />
-        <Select
-            name="apiList"
-            multi={true}
-            options={this.state.options}
-            onChange={this.logChange}
-            placeholder = "Select APIS to use on your application"
-        />
-        <button value="Post" className="btnCreateApp" type="submit">Create App</button>
-      </form>
+      <div className="mdl-card mdl-shadow--4dp">
+        <div className="mdl-card__supporting-text">
+          <h4>Create new application</h4>
+        <form name="crateAppForm" onSubmit={this.handleSubmit}>
+          <input
+            ref="appName"
+            id="appNameField"
+            type="text"
+            placeholder="App name"
+          />
+          <input
+            ref="appDomain"
+            id="appDomainField"
+            type="text"
+            placeholder="Domain name"
+          />
+          <Select
+              name="apiList"
+              multi={true}
+              options={this.state.options}
+              onChange={this.logChange}
+              placeholder = "Select APIS to use on your application"
+            />
+          <button value="Post" className="btnCreateApp" type="submit">Create App</button>
+        </form>
+        </div>
+      </div>
     );
   }
 });
@@ -466,7 +468,7 @@ module.exports = React.createClass({
   displayName: 'console',
   render:function render(){
     return(
-      <div id="container">
+      <div className="container">
         <ConsoleBox fetchApisUrl="/APIS" fetchAppsUrl="/Applications" pollInterval={9000} />
       </div>
     )

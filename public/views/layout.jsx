@@ -23,7 +23,7 @@ module.exports = React.createClass({
           <div className="mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
             <header className="mdl-layout__header">
               <div className="mdl-layout__header-row">
-                <span className="mdl-layout-title">Volcanosis console</span>
+                <span className="mdl-layout-title">Volcanosis developers</span>
                 <div className="mdl-layout-spacer"></div>
                 <div className="mdl-textfield mdl-js-textfield mdl-textfield--expandable mdl-textfield--floating-label mdl-textfield--align-right">
                   <label className="mdl-button mdl-js-button mdl-button--icon" htmlFor="fixed-header-drawer-exp">
@@ -35,7 +35,7 @@ module.exports = React.createClass({
                 </div>
               </div>
             </header>
-            <div className="mdl-layout__drawer">              
+            <div className="mdl-layout__drawer">
               <nav className="mdl-navigation">
                 <a className="mdl-navigation__link" href="">Link</a>
                 <a className="mdl-navigation__link" href="">Link</a>
@@ -46,8 +46,17 @@ module.exports = React.createClass({
             <main className="mdl-layout__content">
               <div className="page-content">
                 {/*content goes here */}
-                {this.props.children}
+                  {this.props.children}
               </div>
+              <footer className="mdl-mini-footer">
+                <div className="mdl-mini-footer__left-section">
+                  <div className="mdl-logo">Volcanosis</div>
+                  <ul className="mdl-mini-footer__link-list">
+                    <li><a href="#">About</a></li>
+                    <li><a href="/team">Team</a></li>
+                  </ul>
+                </div>
+              </footer>
             </main>
           </div>
         </body>
