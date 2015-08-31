@@ -14,8 +14,10 @@ var options = {
   }
 };
 
-//mongoose model to create applications
+//Application model
 var Application = require('../models/application.js');
+//API model
+var API = require('../models/API.js');
 
 //export routes
 module.exports = function(app){
@@ -28,16 +30,15 @@ module.exports = function(app){
     default:
       throw new Error('Unknown execution enviroment: ' + app.get('env'));
   }
-
   //when user open the app redirect /console
   app.get('/', function(req, res){
     return res.redirect(303, '/console');
   });
 
   //developer console to create and configure
-  //application
+  //application and APIS
   app.get('/console',function(req, res){
-    res.render('console',{
+    res.render(req.url,{
       title:'developer console',
       organization:'Volcanosis'
     });
@@ -46,43 +47,77 @@ module.exports = function(app){
   //method to create applications
   //TODO:add missing properties on data model
   //when app is created like appid etc
-  app.post('/CreateApp', function(req, res){
-    if (req.xhr){
-      var appName = req.body.appName,
-          domain = req.body.appDomain;
+  app.post('/Application', function(req, res){
+    if (!req.xhr) return;
 
-      new Application({
-        appName: appName,
-        domain: domain,
-        isActive: true,
-      }).save(function(err){
-        if(err) return console.log('Database connection err');
-        console.log('Data saved');
-        //TODO:Implement this functionality in a single module
-        //after save data, return all the applications to render on React
-        Application.find({isActive:true}, function(err, applications){
-          var context = {
-            applications:applications.map(function(application){
-              return{
-                appName: application.appName,
-                domain: application.domain
-              };
-            })
-          };
-          return res.json(context);
-        });
+    var appName = req.body.appName,
+        domain = req.body.appDomain,
+        apis = req.body.apis;
+
+    new Application({
+      appName: appName,
+      domain: domain,
+      apis: apis,
+      isActive: true,
+    }).save(function(err){
+      if(err) return console.log('Database connection err ' + err);
+      console.log('Application saved');
+      //after save data, return all the applications to render on React
+      Application.find({isActive:true}, function(err, applications){
+        var context = {
+          applications:applications.map(function(application){
+            return{
+              appID: application._id,
+              appName: application.appName,
+              domain: application.domain
+            };
+          })
+        };
+        return res.json(context);
       });
-    }
-    return;
+    });
+  });
+
+  app.post('/API', function(req, res){
+    if (!req.xhr) return
+    var apiName = req.body.ApiName,
+        baseUrl = req.body.baseUrl,
+        methods = req.body.Methods;
+
+    new API({
+      ApiName: apiName,
+      baseUrl: baseUrl,
+      Methods: methods,
+      status: 'Online',
+      isActive: true,
+    }).save(function(err){
+      if(err) return console.log('Database connection err' + err);
+      console.log('API saved');
+      //after save data, return all the applications to render on React
+      API.find({isActive:true}, function(err, APIS){
+        var context = {
+          APIS:APIS.map(function(API){
+            return{
+              ApiName: API.ApiName,
+              baseUrl: API.baseUrl,
+              Methods: API.Methods,
+              status: API.status
+            };
+          })
+        };
+        return res.json(context);
+      });
+    });
   });
 
   //method to fetch application data and
   //exposed to the users
-  app.get('/fetchApps', function(req, res){
+  app.get('/Applications', function(req, res){
     Application.find({isActive:true}, function(err, applications){
       var context = {
         applications:applications.map(function(application){
           return{
+            appID: application._id,
             appName: application.appName,
             domain: application.domain
           };
@@ -91,4 +126,51 @@ module.exports = function(app){
       return res.json(context);
     })
   });
+
+  app.get('/APIS', function(req, res){
+    API.find({isActive:true}, function(err, APIS){
+      var context = {
+        APIS:APIS.map(function(API){
+          return{
+            ApiID: API._id,
+            ApiName: API.ApiName,
+            baseUrl: API.baseUrl,
+            Methods: API.Methods,
+            status: API.status
+          };
+        })
+      };
+      return res.json(context);
+    })
+  });
+
+  app.get('/team', function(req, res){
+    res.render(req.url,{
+      team:[
+        "Sergio Audel Ortiz Gutierrez",
+        "Luis Alonso Valdovinos Valencia"
+    ]
+    })
+  })
+
+ //check 500 err
+  app.get('/fail', function(req, res){
+    throw new Error('internal server error!');
+  });
+
+  //Handle 404 err
+  app.use(function(req, res) {
+    res.render('404', {
+      title: '404',
+      url: req.url
+    });
+  });
+
+  //Handle 500 err
+	app.use(function(err, req, res, next){
+		console.error(err.stack);
+		res.render('500',{
+      title: 'Internal server error'
+    });
+	});
 };

@@ -12,7 +12,9 @@ var express = require('express'),
 var app = express();
 
 //set up react-engine
-var engine = renderer.server.create();
+var engine = renderer.server.create({
+  reactRoutes: path.join(__dirname + '/public/routes.jsx')
+});
 app.engine('jsx', engine);
 app.set('views', __dirname + '/public/views');
 app.set('view engine', 'jsx');

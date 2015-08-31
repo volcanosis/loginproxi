@@ -1,21 +1,39 @@
-body{
-	font-family: 'Roboto', sans-serif;
+/*body{
 	background-color: #E0E0E0;
 }
-.createAppBox{
+.consoleBox{
 	margin:15px;
 	border: solid 1px rgb(228, 228, 228);
 	padding: 10px;
 }
-.appList{
-	width: 50%;
+.createAppForm{
+	background-color: #fff;
+  padding: 1em;
+  border-radius: 2px;
+  width: 203px;
+	margin-bottom: 10px;
+}
+.createApiForm{
+	background-color: #fff;
+  padding: 1em;
+  border-radius: 2px;
+  width: 350px;
+}
+.listsContent{
+
+}
+.applicationsBox .apisBox{
+
+}
+.applicationsBox{
+
 }
 .app{
 	margin-bottom: 1em;
 	border: solid 1px rgb(195, 195, 195);
 	padding: 1em;
 	border-radius: 2px;
-	background-color: #FA3C3C;
+	background-color: #EF5A5A;
 	color:#fff;
 	box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
 }
@@ -23,6 +41,49 @@ body{
 	background-color: #4557B3;
   color: #fff;
 }
+
+.apisBox{
+
+}
+.api{
+	margin-bottom: 1em;
+	border: solid 1px rgb(195, 195, 195);
+	padding: 1em;
+	border-radius: 2px;
+	background-color: #89CA81;
+	color:#676565;
+	box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
+}
+.api:nth-child(2n){
+	background-color: #3DBFD0;
+  color: #fff;
+}
 .editAppBox{
 	text-align: right;
+}*/
+.status {
+  width: 10px;
+  height: 10px;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  border-radius: 50%;
+	float: right;
+  margin: .2em;
+
+}
+.Online{
+	background: #00FF00;
+	border: solid 2px #fff;
+}
+.Offline{
+	background: rgb(255, 200, 7);
+	border: solid 2px #fff;
+}
+.demo-card-wide > .mdl-card__title {
+  color: #fff;
+  height: 150px;
+  background: url('../img/Cvolcano.jpg') center / cover;
+}
+.demo-card-wide > .mdl-card__menu {
+  color: #fff;
 }
