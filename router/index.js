@@ -16,8 +16,6 @@ var options = {
 
 //Application model
 var Application = require('../models/application.js');
-//API model
-var API = require('../models/API.js');
 
 //export routes
 module.exports = function(app){
@@ -36,7 +34,7 @@ module.exports = function(app){
   });
 
   //developer console to create and configure
-  //application and APIS
+  //applications
   app.get('/console',function(req, res){
     res.render(req.url,{
       title:'developer console',
@@ -51,57 +49,23 @@ module.exports = function(app){
     if (!req.xhr) return;
 
     var appName = req.body.appName,
-        domain = req.body.appDomain,
-        apis = req.body.apis;
+        domain = req.body.appDomain
 
     new Application({
-      appName: appName,
-      domain: domain,
-      apis: apis,
-      isActive: true,
+      AppName: appName,
+      Domain: domain,
+      IsActive: true
     }).save(function(err){
       if(err) return console.log('Database connection err ' + err);
       console.log('Application saved');
       //after save data, return all the applications to render on React
-      Application.find({isActive:true}, function(err, applications){
+      Application.find({IsActive:true}, function(err, applications){
         var context = {
           applications:applications.map(function(application){
             return{
               appID: application._id,
-              appName: application.appName,
-              domain: application.domain
-            };
-          })
-        };
-        return res.json(context);
-      });
-    });
-  });
-
-  app.post('/API', function(req, res){
-    if (!req.xhr) return
-    var apiName = req.body.ApiName,
-        baseUrl = req.body.baseUrl,
-        methods = req.body.Methods;
-
-    new API({
-      ApiName: apiName,
-      baseUrl: baseUrl,
-      Methods: methods,
-      status: 'Online',
-      isActive: true,
-    }).save(function(err){
-      if(err) return console.log('Database connection err' + err);
-      console.log('API saved');
-      //after save data, return all the applications to render on React
-      API.find({isActive:true}, function(err, APIS){
-        var context = {
-          APIS:APIS.map(function(API){
-            return{
-              ApiName: API.ApiName,
-              baseUrl: API.baseUrl,
-              Methods: API.Methods,
-              status: API.status
+              appName: application.AppName,
+              domain: application.Domain
             };
           })
         };
@@ -113,30 +77,13 @@ module.exports = function(app){
   //method to fetch application data and
   //exposed to the users
   app.get('/Applications', function(req, res){
-    Application.find({isActive:true}, function(err, applications){
+    Application.find({IsActive:true}, function(err, applications){
       var context = {
         applications:applications.map(function(application){
           return{
             appID: application._id,
-            appName: application.appName,
-            domain: application.domain
-          };
-        })
-      };
-      return res.json(context);
-    })
-  });
-
-  app.get('/APIS', function(req, res){
-    API.find({isActive:true}, function(err, APIS){
-      var context = {
-        APIS:APIS.map(function(API){
-          return{
-            ApiID: API._id,
-            ApiName: API.ApiName,
-            baseUrl: API.baseUrl,
-            Methods: API.Methods,
-            status: API.status
+            appName: application.AppName,
+            domain: application.Domain
           };
         })
       };
