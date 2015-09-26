@@ -1,13 +1,12 @@
-var mongoose= require('mongoose');
+var mongoose = require( 'mongoose' );
 
 var appSchema = mongoose.Schema({
-  appName: String,
-  domain: String,
-  apis: [{
-    ApiID: String
-  }],
-  date:{ type: Date, default: Date.now},
-  isActive: Boolean
+  AppName : String,
+  Domain : String,
+  date : { type : Date, default : Date.now },
+  IsActive : Boolean,
+  PrivateKey : String,
+  PublicKey : String
 });
 
 var Application = mongoose.model('Application', appSchema);
