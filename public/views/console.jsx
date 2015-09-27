@@ -16,6 +16,7 @@ var ConsoleBox = React.createClass({
       dataType: 'json',
       cache:false,
       success:function(data){
+        console.log(data)
         this.setState({applications:data.applications});
       }.bind(this),
       error: function(xhr, statu, err){
@@ -74,7 +75,13 @@ var AppList = React.createClass({
   render: function(){
     var ApplicationsNodes = this.props.applications.map(function(application, index){
       return (
-        <App key={index} appID={application.appID} appName={application.appName}>
+        <App
+          key = { index }
+          appID = { application.appID }
+          appName = { application.appName }
+          privateKey = { application.privateKey }
+          PublicKey = { application.publicKey }
+          >
           {application.domain}
         </App>
       );
@@ -119,7 +126,11 @@ var App = React.createClass({
           <h2 className="mdl-card__title-text">{this.props.appName}</h2>
         </div>
         <div className="mdl-card__supporting-text">
-          <span>ApplicationID: {this.props.appID}</span>
+          <span>Application ID: {this.props.appID}</span>
+          <br/>
+          <span>Private key: {this.props.privateKey}</span>
+          <br/>
+          <span>Public key: {this.props.PublicKey}</span>
           <br/>
           <span>Domain: {this.props.children}</span>
         </div>

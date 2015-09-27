@@ -8,26 +8,26 @@ var React = require( "react" );
 
 //React componet to create new application
 module.exports = React.createClass({
-  handleSubmit: function(evt){
+  handleSubmit : function( evt ){
     evt.preventDefault();
 
     //create the body object with user inputs
     var body = {
-      appName: React.findDOMNode(this.refs.appName).value.trim(),
-      appDomain: React.findDOMNode(this.refs.appDomain).value.trim()
+      appName : React.findDOMNode( this.refs.appName ).value.trim(),
+      appDomain : React.findDOMNode( this.refs.appDomain ).value.trim()
     }
 
     //Form validation
     if( !body.appName || !body.appDomain ) {
-      if(!body.appName){
-        this.setState({AppNameErr : "you must write a name for your application"});
+      if( !body.appName ){
+        this.setState( { AppNameErr : "you must write a name for your application" } );
       } else {
-        this.setState({AppNameErr : ""});
+        this.setState( { AppNameErr : "" } );
       }
-      if(!body.appDomain){
-        this.setState({DomainNameErr : "You must wirte a domain name for your application"});
+      if( !body.appDomain ){
+        this.setState( { DomainNameErr : "You must wirte a domain name for your application" } );
       } else {
-        this.setState({DomainNameErr : ""});
+        this.setState( { DomainNameErr : "" } );
       }
       //if form is not complete
       return;
@@ -36,36 +36,36 @@ module.exports = React.createClass({
     //send data and url to ConsoleBox commponent, create application
     //and reload application list because the component owns state
     var url = this.props.createAppUrl;
-    this.props.onCreateAppSubmit(body, url);
+    this.props.onCreateAppSubmit( body, url );
 
     //finally clean inputs after submit
-    this.setState({formComplete:true});// show the uncompleteForm
-    React.findDOMNode(this.refs.appName).value = "";
-    React.findDOMNode(this.refs.appDomain).value = "";
+    this.setState( { formComplete : true } );// show the uncompleteForm
+    React.findDOMNode( this.refs.appName ).value = "";
+    React.findDOMNode( this.refs.appDomain ).value = "";
     return;
   },
-  componentDidUpdate: function() {
+  componentDidUpdate : function(){
     // This upgrades all upgradable components (i.e. with 'mdl-js-*' class)
     componentHandler.upgradeDom();
   },
-  getInitialState: function(){
+  getInitialState : function(){
     return {
-      formComplete: false,
+      formComplete : false,
       AppNameErr : "",
       DomainNameErr : ""
     };
   },
-  createNewApplication: function(){
+  createNewApplication : function(){
     //initalize the state
     this.replaceState(this.getInitialState());
   },
-  render: function(){
+  render : function(){
     var errStyle = {
-      color: "#F4C236"
+      color : "#F4C236"
     };
     var formCompleteStyle = {
-      textAlign: "center",
-      marginTop: "18px"
+      textAlign : "center",
+      marginTop : "18px"
     };
     var form = (
       <form name="crateAppForm" onSubmit={this.handleSubmit}>
@@ -118,7 +118,7 @@ module.exports = React.createClass({
     )
     return(
       <div>
-          {this.state.formComplete ? formComplete: form }
+          { this.state.formComplete ? formComplete: form }
       </div>
     );
   }

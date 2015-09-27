@@ -4,6 +4,7 @@
  //require credentials hidden on repo
  //for security reasons
 var credentials = require('../credentials.js');
+var uuid = require( 'node-uuid' );
 
 //database configuration
 var mongoose = require('mongoose');
@@ -45,27 +46,31 @@ module.exports = function(app){
   //method to create applications
   //TODO:add missing properties on data model
   //when app is created like appid etc
-  app.post('/Application', function(req, res){
-    if (!req.xhr) return;
+  app.post( '/Application', function( req, res ){
+    if ( !req.xhr ) return;
 
     var appName = req.body.appName,
         domain = req.body.appDomain
 
     new Application({
-      AppName: appName,
-      Domain: domain,
-      IsActive: true
-    }).save(function(err){
-      if(err) return console.log('Database connection err ' + err);
-      console.log('Application saved');
-      //after save data, return all the applications to render on React
-      Application.find({IsActive:true}, function(err, applications){
+      AppName : appName,
+      Domain : domain,
+      IsActive : true,
+      PrivateKey : uuid.v4(),
+      PublicKey : uuid.v4()
+    }).save(function( err ){
+      if(err) return console.log( 'Database connection err: ' + err );
+      console.log( 'Application saved' );
+      //after save data, return all applications to render on React
+      Application.find( { IsActive : true }, function( err, applications ){
         var context = {
-          applications:applications.map(function(application){
-            return{
-              appID: application._id,
-              appName: application.AppName,
-              domain: application.Domain
+          applications : applications.map( function( application ){
+            return {
+              appID : application._id,
+              appName : application.AppName,
+              domain : application.Domain,
+              privateKey : application.PrivateKey,
+              publicKey : application.PublicKey
             };
           })
         };
@@ -76,18 +81,20 @@ module.exports = function(app){
 
   //method to fetch application data and
   //exposed to the users
-  app.get('/Applications', function(req, res){
-    Application.find({IsActive:true}, function(err, applications){
+  app.get( '/Applications', function( req, res ){
+    Application.find( { IsActive : true }, function( err, applications ){
       var context = {
-        applications:applications.map(function(application){
+        applications:applications.map( function( application ){
           return{
-            appID: application._id,
-            appName: application.AppName,
-            domain: application.Domain
+            appID : application._id,
+            appName : application.AppName,
+            domain : application.Domain,
+            privateKey : application.PrivateKey,
+            publicKey : application.PublicKey
           };
         })
       };
-      return res.json(context);
+      return res.json( context );
     })
   });
 
