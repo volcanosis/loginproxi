@@ -60,8 +60,8 @@ var ConsoleBox = React.createClass({
         <div className="createAppForm mdl-cell mdl-cell--6-col">
           <CreateAppForm onCreateAppSubmit={this.handleCreateAppSubmit} createAppUrl="/Application" />
         </div>
-        <div className="listsContent mdl-grid">
-          <div className="applicationsBox mdl-cell mdl-cell--6-col">
+        <div className="listsContent mdl-cell mdl-cell--6-col">
+          <div className="applicationsBox">
             <h1>Applications</h1>
             <AppList applications={this.state.applications}/>
           </div>

@@ -69,48 +69,56 @@ module.exports = React.createClass({
     };
     var form = (
       <form name="crateAppForm" onSubmit={this.handleSubmit}>
-        <h4>Create new application</h4>
-        <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-          <input
-            className="mdl-textfield__input"
-            type="text"
-            id="appNameField"
-            ref="appName"
-            />
-          <label className="mdl-textfield__label"  htmlFor="appNameField">App name</label>
+      <div className="mdl-card mdl-shadow--4dp">
+        <div className="mdl-card__supporting-text">
+            <h4>Create new application</h4>
+            <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+              <input
+                className="mdl-textfield__input"
+                type="text"
+                id="appNameField"
+                ref="appName"
+                />
+              <label className="mdl-textfield__label"  htmlFor="appNameField">App name</label>
+            </div>
+            <span style={errStyle} >{this.state.AppNameErr}</span>
+            <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+              <input
+                className="mdl-textfield__input"
+                type="text"
+                id="appDomainField"
+                ref="appDomain"
+                />
+              <label className="mdl-textfield__label" htmlFor="appDomainField">Domain name</label>
+            </div>
+            <span style={errStyle}>{this.state.DomainNameErr}</span>
         </div>
-        <span style={errStyle} >{this.state.AppNameErr}</span>
-        <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-          <input
-            className="mdl-textfield__input"
-            type="text"
-            id="appDomainField"
-            ref="appDomain"
-            />
-          <label className="mdl-textfield__label" htmlFor="appDomainField">Domain name</label>
-        </div>
-          <span style={errStyle}>{this.state.DomainNameErr}</span>
         <div className="mdl-card__actions mdl-card--border">
           <button value="Post" className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"  type="submit">
-              Create
+            Create
           </button>
         </div>
+      </div>
       </form>
     );
     var formComplete = (
-      <div style={formCompleteStyle}>
-        <i className="icoSuccess material-icons">check_circle</i>
-        <p>your application has been created enjoy!</p>
+      <div className="mdl-card mdl-shadow--4dp">
+        <div className="mdl-card__supporting-text">
+          <div style={formCompleteStyle}>
+            <i className="icoSuccess material-icons">check_circle</i>
+            <p>your application has been created enjoy!</p>
+          </div>
+        </div>
+        <div className="mdl-card__actions mdl-card--border">
           <button className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" onClick={this.createNewApplication}>
             create new one
           </button>
+        </div>
       </div>
     )
     return(
-      <div className="mdl-card mdl-shadow--4dp">
-        <div className="mdl-card__supporting-text">
+      <div>
           {this.state.formComplete ? formComplete: form }
-        </div>
       </div>
     );
   }
