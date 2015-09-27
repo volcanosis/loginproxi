@@ -16,7 +16,6 @@ var ConsoleBox = React.createClass({
       dataType: 'json',
       cache:false,
       success:function(data){
-        console.log(data)
         this.setState({applications:data.applications});
       }.bind(this),
       error: function(xhr, statu, err){
