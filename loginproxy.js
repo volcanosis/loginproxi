@@ -1,7 +1,7 @@
 'use strict';
 
 //make '.jsx' extensions files requirable by node
-require('node-jsx').install();
+require('babel/register');
 
 //require node modules
 var express = require('express'),
@@ -13,16 +13,17 @@ var app = express();
 
 //set up react-engine
 var engine = renderer.server.create({
-  reactRoutes: path.join(__dirname + '/public/routes.jsx')
+  routes : require( path.join( __dirname, '/public/routes.jsx' ) ),
+  routesFilePath : path.join( __dirname, '/public/routes.jsx' )
 });
-app.engine('jsx', engine);
-app.set('views', __dirname + '/public/views');
-app.set('view engine', 'jsx');
+app.engine( 'jsx', engine );
+app.set( 'views', path.join( __dirname, '/public/views' ) );
+app.set( 'view engine', 'jsx' );
 
-app.set('view',renderer.expressView);
+app.set('view', renderer.expressView );
 
 //public assets
-app.use(express.static(__dirname + '/public'));
+app.use( express.static( path.join( __dirname, '/public' ) ) );
 
 app.set('port', process.env.PORT || 3000);
 
