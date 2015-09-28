@@ -30,17 +30,45 @@ module.exports = function(app){
       throw new Error('Unknown execution enviroment: ' + app.get('env'));
   }
   //when user open the app redirect /console
-  app.get('/', function(req, res){
-    return res.redirect(303, '/console');
+  app.get( '/', function( req, res ){
+    return res.redirect( 303, '/console' );
   });
 
   //developer console to create and configure
   //applications
-  app.get('/console',function(req, res){
-    res.render(req.url,{
-      title:'developer console',
-      organization:'Volcanosis'
+  app.get( '/console', function( req, res ){
+    res.render( req.url, {
+      title : 'developer console',
+      organization : 'Volcanosis'
     });
+  });
+
+  app.get( '/console/app/:appID' ,function( req, res ){
+
+    var appID = req.params.appID;
+
+    Application.find( { IsActive : true, _id : appID }, function( err, applications ){
+      if ( err ){
+         res.render( req.url,{
+          data : false
+        })
+      } else {
+        var context = {
+          applications : applications.map( function( application ){
+            return {
+              data : true,
+              appID : application._id,
+              appName : application.AppName,
+              domain : application.Domain,
+              privateKey : application.PrivateKey,
+              publicKey : application.PublicKey
+            };
+          })
+        };
+        //finally
+        res.render( req.url, context );
+      }
+    })
   });
 
   //method to create applications
@@ -67,10 +95,7 @@ module.exports = function(app){
           applications : applications.map( function( application ){
             return {
               appID : application._id,
-              appName : application.AppName,
-              domain : application.Domain,
-              privateKey : application.PrivateKey,
-              publicKey : application.PublicKey
+              appName : application.AppName
             };
           })
         };

@@ -56,15 +56,15 @@ var ConsoleBox = React.createClass({
   },
   render: function(){
     return(
-      <div className="mdl-grid">
-        <div className="createAppForm mdl-cell mdl-cell--6-col">
-          <CreateAppForm onCreateAppSubmit={this.handleCreateAppSubmit} createAppUrl="/Application" />
-        </div>
-        <div className="listsContent mdl-cell mdl-cell--6-col">
-          <div className="applicationsBox">
-            <h1>Applications</h1>
-            <AppList applications={this.state.applications}/>
+      <div>
+        <div className="mdl-grid">
+          <div className="createAppForm mdl-cell mdl-cell--6-col">
+            <CreateAppForm onCreateAppSubmit={this.handleCreateAppSubmit} createAppUrl="/Application" />
           </div>
+        </div>
+        <div className = "">
+          <h1>Applications</h1>
+          <AppList applications={this.state.applications}/>
         </div>
       </div>
     );
@@ -78,37 +78,24 @@ var AppList = React.createClass({
           key = { index }
           appID = { application.appID }
           appName = { application.appName }
-          privateKey = { application.privateKey }
-          PublicKey = { application.publicKey }
           >
           {application.domain}
         </App>
       );
     })
     return(
-      <div className="appList">
+      <div className = "mdl-grid">
         {ApplicationsNodes}
       </div>
     );
   }
 });
-var AppEditForm = React.createClass({
-  handleClikEditApp: function(e){
-    e.preventDefault();
-    console.log('lets modify this application ' + this.props.appID);
-  },
-  render: function(){
-    var mdClass = "mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent ";
-    return(
-        <button
-          onClick={this.handleClikEditApp}
-          className={mdClass + "btnEditarApp"}>
-          edit
-        </button>
-    );
-  }
-});
+
 var App = React.createClass({
+  handleDetailClick: function(){
+    console.log(this.props.appID);
+    window.location = "/console/app/" + this.props.appID;
+  },
   componentDidUpdate: function(){
     /*
      *To update jsclases on MDL
@@ -119,31 +106,38 @@ var App = React.createClass({
     componentHandler.upgradeDom();
   },
   render: function(){
+    var imgStyle = {
+      width : "220px",
+      height : "140px",
+      border : "0" ,
+      padding : "20px"
+    };
     return(
-      <div className="demo-card-wide mdl-card mdl-shadow--2dp">
-        <div className="mdl-card__title">
-          <h2 className="mdl-card__title-text">{this.props.appName}</h2>
-        </div>
-        <div className="mdl-card__supporting-text">
-          <span>Application ID: {this.props.appID}</span>
-          <br/>
-          <span>Private key: {this.props.privateKey}</span>
-          <br/>
-          <span>Public key: {this.props.PublicKey}</span>
-          <br/>
-          <span>Domain: {this.props.children}</span>
-        </div>
-        <div className="mdl-card__actions mdl-card--border">
-          <AppEditForm appID={this.props.appID}/>
-        </div>
-        <div className="mdl-card__menu">
-          <button className="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-            <i className="material-icons">share</i>
-          </button>
+      <div className = "mdl-cell mdl-cell--6-col">
+        <div className = "application_content mdl-shadow--2dp">
+          <div className = "bar" >
+            <h2 className = "mdl-card__title-text">
+              {this.props.appName}
+            </h2>
+            <div className = "wrapper">
+              <button id = { "application-menu-" + this.props.appName}
+                className="mdl-button mdl-js-button mdl-button--icon">
+                <i className="material-icons">more_vert</i>
+              </button>
+              <ul className="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
+                htmlFor = { "application-menu-" + this.props.appName }>
+                <li onClick = {this.handleDetailClick} className="mdl-menu__item">Details</li>
+                <li className="mdl-menu__item">Delete</li>
+              </ul>
+            </div>
+          </div>
+          <div className = "background">
+            <span className = "application__data">Application ID: {this.props.appID}</span>
+          </div>
         </div>
       </div>
-    );
-  }
+      );
+    }
 });
 
 module.exports = React.createClass({
