@@ -1,125 +1,124 @@
 'use strict'
 
 //libs
-var $ = require('jquery');
-var _ = require('underscore');
+var $ = require( "jquery" );
+var _ = require( "underscore" );
 
-var React = require('react');
+var React = require( "react" );
 
 //React componet to create new application
 module.exports = React.createClass({
-  logState:function(){
-    console.log(this.state);
-  },
-  handleSubmit: function(evt){
+  handleSubmit : function( evt ){
     evt.preventDefault();
-    //convert the apis selected array into object
-    var Apis = _.map(this.state.APISSelected, function(Api){
-      return{
-        ApiID: Api
-      }
-    })
+
     //create the body object with user inputs
     var body = {
-      appName: React.findDOMNode(this.refs.appName).value.trim(),
-      appDomain: React.findDOMNode(this.refs.appDomain).value.trim(),
-      apis: Apis
+      appName : React.findDOMNode( this.refs.appName ).value.trim(),
+      appDomain : React.findDOMNode( this.refs.appDomain ).value.trim()
     }
 
-    //TODO: validate and show warning message on missing fields
-    if(!body.appName || !body.appDomain || _.isEmpty(body.apis)) return;
+    //Form validation
+    if( !body.appName || !body.appDomain ) {
+      if( !body.appName ){
+        this.setState( { AppNameErr : "you must write a name for your application" } );
+      } else {
+        this.setState( { AppNameErr : "" } );
+      }
+      if( !body.appDomain ){
+        this.setState( { DomainNameErr : "You must wirte a domain name for your application" } );
+      } else {
+        this.setState( { DomainNameErr : "" } );
+      }
+      //if form is not complete
+      return;
+    }
 
     //send data and url to ConsoleBox commponent, create application
     //and reload application list because the component owns state
     var url = this.props.createAppUrl;
-    this.props.onCreateAppSubmit(body, url);
+    this.props.onCreateAppSubmit( body, url );
 
     //finally clean inputs after submit
-    React.findDOMNode(this.refs.appName).value = '';
-    React.findDOMNode(this.refs.appDomain).value = '';
+    this.setState( { formComplete : true } );// show the uncompleteForm
+    React.findDOMNode( this.refs.appName ).value = "";
+    React.findDOMNode( this.refs.appDomain ).value = "";
     return;
   },
-  fetchAPISFromServer: function(){
-    var url = this.props.fetchApisUrl;
-
-    $.ajax({
-      url: url,
-      dataType: 'json',
-      cache: false,
-      success: function(data){
-        var options = data.APIS.map(function(API){
-          return {
-            value: API.ApiID,
-            label: API.ApiName
-          }
-        })
-        this.setState({options:options});
-      }.bind(this),
-      erorr: function(xhr, status, err){
-        console.log(url, status, err.toString());
-      }.bind(this)
-    });
+  componentDidUpdate : function(){
+    // This upgrades all upgradable components (i.e. with 'mdl-js-*' class)
+    componentHandler.upgradeDom();
   },
-  componentDidMount: function(){
-    this.fetchAPISFromServer();
-  },
-  getInitialState: function(){
+  getInitialState : function(){
     return {
-      options:[], //for existents apis
-      APISSelected:[] //for apis that user select
+      formComplete : false,
+      AppNameErr : "",
+      DomainNameErr : ""
     };
   },
-  //this function are triggered each time the user
-  //select and api From the input
-  logChange: function(val){
-    //if there is no value on hidden input
-    //set the state as empty array
-    if (!val){
-      this.state.APISSelected = [];
-    } else{
-    //set the value of hidden field on state
-     this.state.APISSelected = val.split(',');
-    }
+  createNewApplication : function(){
+    //initalize the state
+    this.replaceState(this.getInitialState());
   },
-  render: function(){
-    var Select = require('react-select');
-    return(
+  render : function(){
+    var errStyle = {
+      color : "#F4C236"
+    };
+    var formCompleteStyle = {
+      textAlign : "center",
+      marginTop : "18px"
+    };
+    var form = (
+      <form name="crateAppForm" onSubmit={this.handleSubmit}>
       <div className="mdl-card mdl-shadow--4dp">
         <div className="mdl-card__supporting-text">
-          <h4>Create new application</h4>
-        <form name="crateAppForm" onSubmit={this.handleSubmit}>
-          <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-            <input
-              className="mdl-textfield__input"
-              type="text"
-              id="appNameField"
-              ref="appName"
-              />
-            <label className="mdl-textfield__label"  htmlFor="appNameField">App name</label>
-          </div>
-          <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-            <input
-              className="mdl-textfield__input"
-              type="text"
-              id="appDomainField"
-              ref="appDomain"
-              />
-            <label className="mdl-textfield__label" htmlFor="appDomainField">Domain name</label>
-          </div>
-          <Select
-              name="apiList"
-              multi={true}
-              options={this.state.options}
-              onChange={this.logChange}
-              placeholder = "Select APIS to use on your application"
-            />
-          <div className="mdl-card__actions mdl-card--border">
-            <button value="Post" className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"  type="submit">
-                Create
-            </button>
-          </div>
-        </form>
+            <h4>Create new application</h4>
+            <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+              <input
+                className="mdl-textfield__input"
+                type="text"
+                id="appNameField"
+                ref="appName"
+                />
+              <label className="mdl-textfield__label"  htmlFor="appNameField">App name</label>
+            </div>
+            <span style={errStyle} >{this.state.AppNameErr}</span>
+            <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+              <input
+                className="mdl-textfield__input"
+                type="text"
+                id="appDomainField"
+                ref="appDomain"
+                />
+              <label className="mdl-textfield__label" htmlFor="appDomainField">Domain name</label>
+            </div>
+            <span style={errStyle}>{this.state.DomainNameErr}</span>
         </div>
+        <div className="mdl-card__actions mdl-card--border">
+          <button value="Post" className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"  type="submit">
+            Create
+          </button>
+        </div>
+      </div>
+      </form>
+    );
+    var formComplete = (
+      <div className="mdl-card mdl-shadow--4dp">
+        <div className="mdl-card__supporting-text">
+          <div style={formCompleteStyle}>
+            <i className="icoSuccess material-icons">check_circle</i>
+            <p>your application has been created enjoy!</p>
+          </div>
+        </div>
+        <div className="mdl-card__actions mdl-card--border">
+          <button className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" onClick={this.createNewApplication}>
+            create new one
+          </button>
+        </div>
+      </div>
+    )
+    return(
+      <div>
+          { this.state.formComplete ? formComplete: form }
       </div>
     );
   }

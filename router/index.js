@@ -4,6 +4,7 @@
  //require credentials hidden on repo
  //for security reasons
 var credentials = require('../credentials.js');
+var uuid = require( 'node-uuid' );
 
 //database configuration
 var mongoose = require('mongoose');
@@ -16,8 +17,6 @@ var options = {
 
 //Application model
 var Application = require('../models/application.js');
-//API model
-var API = require('../models/API.js');
 
 //export routes
 module.exports = function(app){
@@ -31,77 +30,72 @@ module.exports = function(app){
       throw new Error('Unknown execution enviroment: ' + app.get('env'));
   }
   //when user open the app redirect /console
-  app.get('/', function(req, res){
-    return res.redirect(303, '/console');
+  app.get( '/', function( req, res ){
+    return res.redirect( 303, '/console' );
   });
 
   //developer console to create and configure
-  //application and APIS
-  app.get('/console',function(req, res){
-    res.render(req.url,{
-      title:'developer console',
-      organization:'Volcanosis'
+  //applications
+  app.get( '/console', function( req, res ){
+    res.render( req.url, {
+      title : 'developer console',
+      organization : 'Volcanosis'
     });
+  });
+
+  app.get( '/console/app/:appID' ,function( req, res ){
+
+    var appID = req.params.appID;
+
+    Application.find( { IsActive : true, _id : appID }, function( err, applications ){
+      if ( err ){
+         res.render( req.url,{
+          data : false
+        })
+      } else {
+        var context = {
+          applications : applications.map( function( application ){
+            return {
+              data : true,
+              appID : application._id,
+              appName : application.AppName,
+              domain : application.Domain,
+              privateKey : application.PrivateKey,
+              publicKey : application.PublicKey
+            };
+          })
+        };
+        //finally
+        res.render( req.url, context );
+      }
+    })
   });
 
   //method to create applications
   //TODO:add missing properties on data model
   //when app is created like appid etc
-  app.post('/Application', function(req, res){
-    if (!req.xhr) return;
+  app.post( '/Application', function( req, res ){
+    if ( !req.xhr ) return;
 
     var appName = req.body.appName,
-        domain = req.body.appDomain,
-        apis = req.body.apis;
+        domain = req.body.appDomain
 
     new Application({
-      appName: appName,
-      domain: domain,
-      apis: apis,
-      isActive: true,
-    }).save(function(err){
-      if(err) return console.log('Database connection err ' + err);
-      console.log('Application saved');
-      //after save data, return all the applications to render on React
-      Application.find({isActive:true}, function(err, applications){
+      AppName : appName,
+      Domain : domain,
+      IsActive : true,
+      PrivateKey : uuid.v4(),
+      PublicKey : uuid.v4()
+    }).save(function( err ){
+      if(err) return console.log( 'Database connection err: ' + err );
+      console.log( 'Application saved' );
+      //after save data, return all applications to render on React
+      Application.find( { IsActive : true }, function( err, applications ){
         var context = {
-          applications:applications.map(function(application){
-            return{
-              appID: application._id,
-              appName: application.appName,
-              domain: application.domain
-            };
-          })
-        };
-        return res.json(context);
-      });
-    });
-  });
-
-  app.post('/API', function(req, res){
-    if (!req.xhr) return
-    var apiName = req.body.ApiName,
-        baseUrl = req.body.baseUrl,
-        methods = req.body.Methods;
-
-    new API({
-      ApiName: apiName,
-      baseUrl: baseUrl,
-      Methods: methods,
-      status: 'Online',
-      isActive: true,
-    }).save(function(err){
-      if(err) return console.log('Database connection err' + err);
-      console.log('API saved');
-      //after save data, return all the applications to render on React
-      API.find({isActive:true}, function(err, APIS){
-        var context = {
-          APIS:APIS.map(function(API){
-            return{
-              ApiName: API.ApiName,
-              baseUrl: API.baseUrl,
-              Methods: API.Methods,
-              status: API.status
+          applications : applications.map( function( application ){
+            return {
+              appID : application._id,
+              appName : application.AppName
             };
           })
         };
@@ -112,35 +106,20 @@ module.exports = function(app){
 
   //method to fetch application data and
   //exposed to the users
-  app.get('/Applications', function(req, res){
-    Application.find({isActive:true}, function(err, applications){
+  app.get( '/Applications', function( req, res ){
+    Application.find( { IsActive : true }, function( err, applications ){
       var context = {
-        applications:applications.map(function(application){
+        applications:applications.map( function( application ){
           return{
-            appID: application._id,
-            appName: application.appName,
-            domain: application.domain
+            appID : application._id,
+            appName : application.AppName,
+            domain : application.Domain,
+            privateKey : application.PrivateKey,
+            publicKey : application.PublicKey
           };
         })
       };
-      return res.json(context);
-    })
-  });
-
-  app.get('/APIS', function(req, res){
-    API.find({isActive:true}, function(err, APIS){
-      var context = {
-        APIS:APIS.map(function(API){
-          return{
-            ApiID: API._id,
-            ApiName: API.ApiName,
-            baseUrl: API.baseUrl,
-            Methods: API.Methods,
-            status: API.status
-          };
-        })
-      };
-      return res.json(context);
+      return res.json( context );
     })
   });
 

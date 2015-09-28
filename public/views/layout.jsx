@@ -7,13 +7,16 @@ module.exports = React.createClass({
     window.location = '/console'
   },
   render:function render(){
+    var titleStyle = {
+        cursor : "pointer"
+    }
     return(
       <html>
         <head>
           <meta charSet='utf-8' />
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
           <link rel="stylesheet" type="text/css" href="/css/vendor/react-select/default.css"/>
-          <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.0.4/material.red-indigo.min.css"/>
+          <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.0.4/material.indigo-pink.min.css"/>
           <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
 
           <link rel="stylesheet" type="text/css" href="/css/app.css"/>
@@ -26,7 +29,7 @@ module.exports = React.createClass({
           <div className="mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
             <header className="mdl-layout__header">
               <div className="mdl-layout__header-row">
-                <span className="mdl-layout-title" onClick={this.handleTitleClick}>Volcanosis developers</span>
+                <span style = { titleStyle } className="mdl-layout-title" onClick={this.handleTitleClick}>Volcanosis developers</span>
                 <div className="mdl-layout-spacer"></div>
                 <div className="mdl-textfield mdl-js-textfield mdl-textfield--expandable mdl-textfield--floating-label mdl-textfield--align-right">
                   <label className="mdl-button mdl-js-button mdl-button--icon" htmlFor="fixed-header-drawer-exp">
